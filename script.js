@@ -36,9 +36,9 @@ class ProductManager {
         try {
             const response = await fetch('sample_data.csv');
             const csvText = await response.text();
-            
+
             // Parsear CSV manualmente
-            const lines = csvText.trim().split('\\n');
+            const lines = csvText.trim().split('\n');
             const headers = lines[0].split(',');
             
             this.products = lines.slice(1).map(line => {
