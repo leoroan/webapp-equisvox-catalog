@@ -1,0 +1,260 @@
+/* Design System Variables */
+:root {
+  --primary: #4A90E2;
+  --secondary: #9B59B6;
+  --accent: #FF6B6B;
+  --bg: #F8F9FA;
+  --text: #212529;
+  --dark-bg: #1a1a1a;
+  --card-shadow: 0 2px 10px rgba(0,0,0,0.1);
+  --transition: all 0.3s ease;
+}
+
+/* Bootstrap Customization */
+.btn-primary {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.btn-primary:hover {
+  background-color: #357abd;
+  border-color: #357abd;
+}
+
+.btn-secondary {
+  background-color: var(--secondary);
+  border-color: var(--secondary);
+}
+
+.btn-secondary:hover {
+  background-color: #8e44ad;
+  border-color: #8e44ad;
+}
+
+.btn-accent {
+  background-color: var(--accent);
+  border-color: var(--accent);
+  color: white;
+}
+
+.btn-accent:hover {
+  background-color: #e55555;
+  border-color: #e55555;
+  color: white;
+}
+
+.bg-primary {
+  background-color: var(--primary) !important;
+}
+
+/* Typography */
+body {
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: var(--bg);
+  color: var(--text);
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+}
+
+/* Custom Styles */
+.navbar-brand {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+}
+
+/* Game Cards */
+.game-card {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--card-shadow);
+  transition: var(--transition);
+  overflow: hidden;
+  height: 100%;
+}
+
+.game-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+}
+
+.game-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  transition: var(--transition);
+}
+
+.game-card:hover img {
+  transform: scale(1.05);
+}
+
+.game-title {
+  font-family: 'Poppins', sans-serif;
+  font-weight: 600;
+  font-size: 1.1rem;
+  margin-bottom: 0.5rem;
+  color: var(--text);
+}
+
+.game-price {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.original-price {
+  text-decoration: line-through;
+  color: #6c757d;
+  font-size: 0.9rem;
+}
+
+.current-price {
+  font-weight: 700;
+  font-size: 1.2rem;
+  color: var(--primary);
+}
+
+.discount-badge {
+  background: var(--accent);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.game-offer {
+  background: #f8f9fa;
+  padding: 0.5rem;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.game-url {
+  display: inline-block;
+  color: var(--primary);
+  text-decoration: none;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+.game-url:hover {
+  color: #357abd;
+  text-decoration: underline;
+}
+
+/* Loading States */
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+/* Ads */
+.ad {
+  background: #f0f0f0;
+  border: 2px dashed #ccc;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #666;
+  font-weight: 500;
+  text-align: center;
+  margin: 1rem 0;
+}
+
+.ad-banner {
+  width: 100%;
+  height: 90px;
+  max-width: 728px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ad-inline {
+  width: 100%;
+  height: 250px;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.ad-sidebar {
+  width: 100%;
+  height: 600px;
+  max-width: 160px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+/* Pagination */
+.pagination .page-link {
+  color: var(--primary);
+  border-color: #dee2e6;
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--primary);
+  border-color: var(--primary);
+}
+
+.pagination .page-link:hover {
+  color: #357abd;
+}
+
+/* Data Input Section */
+.data-input-section .card {
+  border: none;
+  box-shadow: var(--card-shadow);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .game-card img {
+    height: 150px;
+  }
+  
+  .current-price {
+    font-size: 1rem;
+  }
+  
+  .ad-banner {
+    height: 60px;
+  }
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.game-card {
+  animation: fadeIn 0.5s ease-out;
+}
+
+/* Utility Classes */
+.text-accent {
+  color: var(--accent) !important;
+}
+
+.bg-accent {
+  background-color: var(--accent) !important;
+}
+
+.border-accent {
+  border-color: var(--accent) !important;
+}
