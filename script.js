@@ -217,7 +217,9 @@ class ProductManager {
                     <div class="discount-badge">
                         -${discountPercent}%
                     </div>
+                    <img src="${product['Image URL']}" alt="${product['Title']" style="max-width: 100%; height: auto;">
                     <i class="fas fa-box-open"></i>
+                    
                 </div>
                 <div class="product-info">
                     <h5 class="product-title">${product.Title}</h5>
