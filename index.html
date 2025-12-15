@@ -202,22 +202,23 @@
                 const res = await fetch(this.url);
                 const text = await res.text();
                 const [h, ...r] = text.trim().split('\n');
-                const k = h.split(',');
+                const headers = h.split(',').map(x => x.trim());
 
                 return r.map(row => {
                     const v = row.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/)
                         .map(x => x.replace(/"/g, '').trim());
-                    const o = Object.fromEntries(k.map((key, i) => [key, v[i]]));
-
+                    const o = Object.fromEntries(
+                        headers.map((key, i) => [key, v[i]])
+                    );
                     return {
-                        id: o.ID,
-                        title: o.Title,
+                        id: o.ID?.trim(),
+                        title: o.Title?.trim(),
                         original: Number(o['Original Price']),
                         current: Number(o['Current Price']),
-                        discount: parseFloat(o['Discount %']),
-                        offer: o.Offer,
-                        url: o.URL,
-                        imageUrl: o['Image URL'] || ''
+                        discount: parseFloat(o['Discount %']) || 0,
+                        offer: o.Offer?.trim(),
+                        url: o.URL?.trim(),
+                        imageUrl: o['Image URL']?.trim() || ''
                     };
                 }).sort((a, b) => a.title.localeCompare(b.title));
             }
@@ -253,27 +254,40 @@
         }
 
         function renderRows() {
-            const tbody = rows;
-            tbody.innerHTML = '';
+            rows.innerHTML = '';
 
             const start = (state.page - 1) * state.perPage;
             const page = state.filtered.slice(start, start + state.perPage);
 
             page.forEach(i => {
-                tbody.innerHTML += `
-        <tr>
-          <td><img src="${i['Image URL']}" alt="Portada de ${i.title}" class="game-img"></td>
-          <td>${i.title}</td>
-          <td>
-            <span class="old-price">$${i.original}</span><br>
-            $${i.current}
-          </td>
-          <td class="discount">-${i.discount}%</td>
-          <td>${i.offer}</td>
-          <td><a href="${i.URL}" target="_blank" class="btn btn-sm btn-outline-info">Ver</a></td>
-        </tr>`;
+                rows.innerHTML += `
+      <tr>
+        <td>
+          <img
+            src="${i.imageUrl || PLACEHOLDER_IMG}"
+            alt="Portada de ${i.title}"
+            class="game-img"
+            loading="lazy"
+            onerror="this.onerror=null;this.src=PLACEHOLDER_IMG"
+          >
+        </td>
+        <td>${i.title}</td>
+        <td>
+          <span class="old-price">$${i.original}</span><br>
+          $${i.current}
+        </td>
+        <td class="discount">-${i.discount}%</td>
+        <td>${i.offer}</td>
+        <td>
+          <a href="${i.url}" target="_blank" class="btn btn-sm btn-outline-info">
+            Ver
+          </a>
+        </td>
+      </tr>
+    `;
             });
         }
+
 
         function renderPagination() {
             const pages = Math.ceil(state.filtered.length / state.perPage);
