@@ -483,11 +483,12 @@
             state.data = await ds.fetch();
             state.filtered = [...state.data];
 
-            [fTitle, fOffer, fMaxPrice, fDiscount, fSort]
+            [fTitle, fMaxPrice, fDiscount, fSort]
                 .forEach(el => el.addEventListener('input', applyFilters));
 
-            // render();
             calcPerPage();
+            render();
+
             window.addEventListener('resize', () => {
                 calcPerPage();
                 render();
@@ -495,6 +496,7 @@
         }
 
         init();
+
 
 
         const modal = new bootstrap.Modal(
