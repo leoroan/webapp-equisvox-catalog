@@ -202,12 +202,14 @@
                     const o = Object.fromEntries(k.map((key, i) => [key, v[i]]));
 
                     return {
-                        ...o,
+                        id: o.ID,
                         title: o.Title,
                         original: Number(o['Original Price']),
                         current: Number(o['Current Price']),
                         discount: parseFloat(o['Discount %']),
-                        offer: o.Offer
+                        offer: o.Offer,
+                        url: o.URL,
+                        imageUrl: o['Image URL']
                     };
                 }).sort((a, b) => a.title.localeCompare(b.title));
             }
@@ -252,7 +254,7 @@
             page.forEach(i => {
                 tbody.innerHTML += `
         <tr>
-          <td><img src="${i.Image}" alt="Portada de ${i.title}" class="game-img"></td>
+          <td><img src="${i.imageUrl}" alt="Portada de ${i.title}" class="game-img"></td>
           <td>${i.title}</td>
           <td>
             <span class="old-price">$${i.original}</span><br>
