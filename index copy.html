@@ -1,0 +1,533 @@
+<!doctype html>
+<html lang="es">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Proyecto | Ofertas</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@500;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-main: #0b1220;
+            --bg-soft: #1e1b4b;
+            --bg-card: #111827;
+            --txt-main: #e5e7eb;
+            --txt-muted: #94a3b8;
+            --accent: #60a5fa;
+            --success: #22c55e;
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-main), var(--bg-soft));
+            font-family: Inter, sans-serif;
+            color: var(--txt-main);
+            min-height: 100vh;
+        }
+
+        h1 {
+            font-family: Poppins, sans-serif;
+        }
+
+        /* Layout */
+        .layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 992px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Filters */
+        .filters {
+            background: rgba(17, 24, 39, 0.9);
+            border-radius: .75rem;
+            padding: 1rem;
+            font-size: .85rem;
+        }
+
+        .filters label {
+            font-size: .7rem;
+            color: var(--txt-muted);
+        }
+
+        .filters {
+            /* position: sticky; */
+            top: 1rem;
+            height: fit-content;
+        }
+
+        .filters h6 {
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .filters .form-control,
+        .filters .form-select {
+            background: #020617;
+            border: 1px solid #1e293b;
+            color: var(--txt-main);
+        }
+
+        .filters .form-control::placeholder {
+            color: var(--txt-muted);
+        }
+
+        /* Table */
+        .table-wrap {
+            background: rgba(17, 24, 39, 0.9);
+            border-radius: .75rem;
+            overflow: hidden;
+        }
+
+        table {
+            color: var(--txt-main);
+            margin: 0;
+            font-size: .85rem;
+        }
+
+        thead {
+            background: #020617;
+        }
+
+        th {
+            font-weight: 500;
+            color: var(--txt-muted);
+        }
+
+        tbody tr:hover {
+            background: rgba(96, 165, 250, 0.08);
+        }
+
+        .game-img {
+            width: 40px;
+            height: 40px;
+            object-fit: cover;
+            border-radius: .25rem;
+            background: #020617;
+        }
+
+        .old-price {
+            text-decoration: line-through;
+            color: var(--txt-muted);
+            font-size: .75rem;
+        }
+
+        .discount {
+            color: var(--success);
+            font-weight: 600;
+        }
+
+        /* Pagination */
+        .pagination {
+            margin: 0;
+        }
+
+        .page-link {
+            background: transparent;
+            color: var(--txt-main);
+            border: none;
+        }
+
+        .page-item.active .page-link {
+            background: var(--accent);
+            color: #020617;
+            border-radius: .25rem;
+        }
+
+        .game-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: .5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e293b, #020617);
+            color: #60a5fa;
+            cursor: pointer;
+        }
+
+        .game-icon:hover {
+            background: linear-gradient(135deg, #1e40af, #020617);
+        }
+
+        .badge-cheap {
+            background: #facc15;
+            color: #020617;
+        }
+
+        .badge-hot {
+            background: #ef4444;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        main {
+            height: calc(100vh - 2rem);
+        }
+
+        .table-wrap {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .table-wrap table {
+            flex: 1;
+        }
+
+        .table-wrap tbody {
+            display: block;
+            overflow-y: auto;
+        }
+
+        .table-wrap thead,
+        .table-wrap tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .table td,
+        .table th {
+            padding: .75rem .75rem;
+            vertical-align: middle;
+        }
+
+        .table tbody tr {
+            height: 64px;
+        }
+
+        .row-hot {
+            background: linear-gradient(90deg,
+                    rgba(239, 68, 68, 0.15),
+                    rgba(239, 68, 68, 0.03));
+        }
+
+        .row-hot:hover {
+            background: linear-gradient(90deg,
+                    rgba(239, 68, 68, 0.25),
+                    rgba(239, 68, 68, 0.08));
+        }
+
+        .container-xl {
+            max-width: 1400px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <main class="container-xl py-4 h-100">
+
+        <h1 class="mb-4">Ofertas</h1>
+
+        <section class="layout">
+            <!-- Filters -->
+            <aside class="filters">
+                <h6 class="mb-3">Filtros</h6>
+
+                <div class="mb-2">
+                    <label>Título</label>
+                    <input id="fTitle" class="form-control form-control-sm" placeholder="Buscar…">
+                </div>
+
+                <div class="mb-2">
+                    <label>Precio máximo</label>
+                    <input id="fMaxPrice" type="number" class="form-control form-control-sm" placeholder="$">
+                </div>
+
+                <div class="mb-2">
+                    <label>Descuento mínimo (%)</label>
+                    <select id="fDiscount" class="form-select form-select-sm">
+                        <option value="0">Cualquiera</option>
+                        <option value="25">25%+</option>
+                        <option value="50">50%+</option>
+                        <option value="75">75%+</option>
+                    </select>
+                </div>
+
+                <div class="mb-2">
+                    <label>Ordenar por</label>
+                    <select id="fSort" class="form-select form-select-sm">
+                        <option value="title">Nombre</option>
+                        <option value="current">Precio</option>
+                        <option value="discount">% Descuento</option>
+                    </select>
+                </div>
+            </aside>
+
+
+            <!-- Table -->
+            <section class="table-wrap">
+                <table class="table table-dark table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Título</th>
+                            <th>Precio</th>
+                            <th>Descuento</th>
+                            <th>Oferta</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows"></tbody>
+                </table>
+
+                <nav class="d-flex justify-content-end p-2">
+                    <ul id="pagination" class="pagination pagination-sm"></ul>
+                </nav>
+            </section>
+        </section>
+    </main>
+
+    <div class="modal fade" id="detailModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailTitle"></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="detailImage" class="img-fluid rounded mb-3" alt="">
+                    <p id="detailOffer" class="text-muted"></p>
+                    <p>
+                        <span class="old-price" id="detailOriginal"></span><br>
+                        <strong id="detailCurrent"></strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // SVG placeholder base64 (40x40)
+        const PLACEHOLDER_IMG = 'data:image/svg+xml;base64,' + btoa(`<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 40 40">
+  <rect width="40" height="40" rx="4" fill="#020617"/>
+  <path d="M8 26l6-7 5 6 4-5 9 10H8z" fill="#334155"/>
+  <circle cx="26" cy="14" r="3" fill="#475569"/>
+</svg>`);
+
+        class CsvDataSource {
+            constructor(url) { this.url = url; }
+
+            async fetch() {
+                const res = await fetch(this.url);
+                const text = await res.text();
+                const [h, ...r] = text.trim().split('\n');
+                const headers = h.split(',').map(x => x.trim());
+
+                return r.map(row => {
+                    const v = row.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/)
+                        .map(x => x.replace(/"/g, '').trim());
+                    const o = Object.fromEntries(
+                        headers.map((key, i) => [key, v[i]])
+                    );
+                    return {
+                        id: o.ID?.trim(),
+                        title: o.Title?.trim(),
+                        original: Number(o['Original Price']),
+                        current: Number(o['Current Price']),
+                        discount: parseFloat(o['Discount %']) || 0,
+                        offer: o.Offer?.trim(),
+                        url: o.URL?.trim(),
+                        imageUrl: o['Image URL']?.trim() || ''
+                    };
+                }).sort((a, b) => a.title.localeCompare(b.title));
+            }
+        }
+
+        const state = {
+            data: [],
+            filtered: [],
+            page: 1,
+            perPage: 10
+        };
+
+        function applyFilters() {
+            const title = fTitle.value.toLowerCase();
+            const max = Number(fMaxPrice.value || Infinity);
+            const minDisc = Number(fDiscount.value);
+            const sort = fSort.value;
+
+            state.filtered = state.data
+                .filter(i =>
+                    i.title.toLowerCase().includes(title) &&
+                    i.current <= max &&
+                    i.discount >= minDisc
+                )
+                .sort((a, b) => {
+                    if (sort === 'title') return a.title.localeCompare(b.title);
+                    if (sort === 'current') return a.current - b.current;
+                    if (sort === 'discount') return b.discount - a.discount;
+                    return 0;
+                });
+
+            state.page = 1;
+            render();
+        }
+
+
+
+        function render() {
+            renderRows();
+            renderPagination();
+        }
+
+        function renderRows() {
+            rows.innerHTML = '';
+
+            const start = (state.page - 1) * state.perPage;
+            const page = state.filtered.slice(start, start + state.perPage);
+
+            page.forEach((i, idx) => {
+                const priceBadge =
+                    i.current < 1000
+                        ? `<span class="badge badge-hot ms-1">🔥</span>`
+                        : i.current < 2000
+                            ? `<span class="badge badge-cheap ms-1">OFERTA</span>`
+                            : '';
+                const rowClass =
+                    i.current < 1000 ? 'row-hot' : '';
+
+                rows.innerHTML += `
+                    <tr>
+                      <td>
+                        <div class="game-icon" onclick="openDetail(${start + idx})">
+                          <i class="bi bi-controller fs-5"></i>
+                        </div>
+                      </td>
+                      <td>${i.title}</td>
+                      <td>
+                          <span class="old-price">$${i.original}</span><br>
+                          $${i.current}
+                          ${priceBadge}
+                        </td>
+                      <td class="discount">-${i.discount}%</td>
+                      <td>${i.offer}</td>
+                      <td>
+                        <a href="${i.url}" target="_blank" class="btn btn-sm btn-outline-info">
+                          Ver
+                        </a>
+                      </td>
+                    </tr>
+                `;
+            });
+        }
+
+
+
+        function renderPagination() {
+            const totalPages = Math.ceil(state.filtered.length / state.perPage);
+            const current = state.page;
+            const delta = 2; // páginas a cada lado
+            pagination.innerHTML = '';
+
+            if (totalPages <= 1) return;
+
+            const add = (p, label = p, active = false, disabled = false) => {
+                pagination.innerHTML += `
+      <li class="page-item ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}">
+        <button class="page-link" ${disabled ? '' : `onclick="setPage(${p})"`}>
+          ${label}
+        </button>
+      </li>`;
+            };
+
+            add(current - 1, '«', false, current === 1);
+
+            if (current > delta + 1) {
+                add(1);
+                add(null, '…', false, true);
+            }
+
+            for (let i = Math.max(1, current - delta); i <= Math.min(totalPages, current + delta); i++) {
+                add(i, i, i === current);
+            }
+
+            if (current < totalPages - delta) {
+                add(null, '…', false, true);
+                add(totalPages);
+            }
+
+            add(current + 1, '»', false, current === totalPages);
+        }
+
+        function setPage(p) {
+            if (p < 1 || p > Math.ceil(state.filtered.length / state.perPage)) return;
+            state.page = p;
+            renderRows();
+            renderPagination();
+        }
+
+
+        async function init() {
+            const ds = new CsvDataSource('./sample_data.csv');
+            state.data = await ds.fetch();
+            state.filtered = [...state.data];
+
+            [fTitle, fMaxPrice, fDiscount, fSort]
+                .forEach(el => el.addEventListener('input', applyFilters));
+
+            calcPerPage();
+            render();
+
+            window.addEventListener('resize', () => {
+                calcPerPage();
+                render();
+            });
+        }
+
+        init();
+
+
+
+        const modal = new bootstrap.Modal(
+            document.getElementById('detailModal')
+        );
+
+        function openDetail(index) {
+            const i = state.filtered[index];
+
+            detailTitle.textContent = i.title;
+            detailOffer.textContent = i.offer;
+            detailOriginal.textContent = `$${i.original}`;
+            detailCurrent.textContent = `$${i.current}`;
+            detailImage.src = i.imageUrl || PLACEHOLDER_IMG;
+            detailImage.alt = `Portada de ${i.title}`;
+
+            modal.show();
+        }
+
+        function calcPerPage() {
+            const rowHeight = 72;
+            const tableWrap = document.querySelector('.table-wrap');
+            const paginationHeight = 48;
+
+            const available =
+                tableWrap.clientHeight - paginationHeight;
+
+            state.perPage = Math.max(6, Math.floor(available / rowHeight));
+        }
+    </script>
+
+</body>
+
+</html>
