@@ -139,6 +139,15 @@
         .game-icon:hover {
             background: linear-gradient(135deg, #1e40af, #020617);
         }
+
+        .badge-cheap {
+            background: #facc15;
+            color: #020617;
+        }
+
+        .badge-hot {
+            background: #ef4444;
+        }
     </style>
 </head>
 
@@ -176,6 +185,16 @@
                         <option value="75">75%+</option>
                     </select>
                 </div>
+
+                <div class="mb-2">
+                    <label>Ordenar por</label>
+                    <select id="fSort" class="form-select form-select-sm">
+                        <option value="title">Nombre</option>
+                        <option value="current">Precio</option>
+                        <option value="discount">% Descuento</option>
+                    </select>
+                </div>
+
             </aside>
 
             <!-- Table -->
@@ -271,17 +290,25 @@
             const offer = fOffer.value.toLowerCase();
             const max = Number(fMaxPrice.value || Infinity);
             const minDisc = Number(fDiscount.value);
+            const sort = fSort.value;
 
-            state.filtered = state.data.filter(i =>
-                i.title.toLowerCase().includes(title) &&
-                i.offer.toLowerCase().includes(offer) &&
-                i.current <= max &&
-                i.discount >= minDisc
-            );
+            state.filtered = state.data
+                .filter(i =>
+                    i.title.toLowerCase().includes(title) &&
+                    i.offer.toLowerCase().includes(offer) &&
+                    i.current <= max &&
+                    i.discount >= minDisc
+                )
+                .sort((a, b) => {
+                    if (sort === 'title') return a.title.localeCompare(b.title);
+                    if (sort === 'current') return a.current - b.current;
+                    if (sort === 'discount') return b.discount - a.discount;
+                });
 
             state.page = 1;
             render();
         }
+
 
         function render() {
             renderRows();
@@ -295,52 +322,91 @@
             const page = state.filtered.slice(start, start + state.perPage);
 
             page.forEach((i, idx) => {
+                const priceBadge =
+                    i.current < 1000
+                        ? `<span class="badge badge-hot ms-1">🔥</span>`
+                        : i.current < 2000
+                            ? `<span class="badge badge-cheap ms-1">OFERTA</span>`
+                            : '';
+                            
                 rows.innerHTML += `
-      <tr>
-        <td>
-          <div class="game-icon" onclick="openDetail(${start + idx})">
-            <i class="bi bi-controller fs-5"></i>
-          </div>
-        </td>
-        <td>${i.title}</td>
-        <td>
-          <span class="old-price">$${i.original}</span><br>
-          $${i.current}
-        </td>
-        <td class="discount">-${i.discount}%</td>
-        <td>${i.offer}</td>
-        <td>
-          <a href="${i.url}" target="_blank" class="btn btn-sm btn-outline-info">
-            Ver
-          </a>
-        </td>
-      </tr>
-    `;
+                    <tr>
+                      <td>
+                        <div class="game-icon" onclick="openDetail(${start + idx})">
+                          <i class="bi bi-controller fs-5"></i>
+                        </div>
+                      </td>
+                      <td>${i.title}</td>
+                      <td>
+                          <span class="old-price">$${i.original}</span><br>
+                          $${i.current}
+                          ${priceBadge}
+                        </td>
+                      <td class="discount">-${i.discount}%</td>
+                      <td>${i.offer}</td>
+                      <td>
+                        <a href="${i.url}" target="_blank" class="btn btn-sm btn-outline-info">
+                          Ver
+                        </a>
+                      </td>
+                    </tr>
+                `;
             });
         }
 
 
 
         function renderPagination() {
-            const pages = Math.ceil(state.filtered.length / state.perPage);
+            const totalPages = Math.ceil(state.filtered.length / state.perPage);
+            const current = state.page;
+            const delta = 2; // páginas a cada lado
             pagination.innerHTML = '';
 
-            for (let i = 1; i <= pages; i++) {
+            if (totalPages <= 1) return;
+
+            const add = (p, label = p, active = false, disabled = false) => {
                 pagination.innerHTML += `
-        <li class="page-item ${i === state.page ? 'active' : ''}">
-          <button class="page-link" onclick="state.page=${i};render()">${i}</button>
-        </li>`;
+      <li class="page-item ${active ? 'active' : ''} ${disabled ? 'disabled' : ''}">
+        <button class="page-link" ${disabled ? '' : `onclick="setPage(${p})"`}>
+          ${label}
+        </button>
+      </li>`;
+            };
+
+            add(current - 1, '«', false, current === 1);
+
+            if (current > delta + 1) {
+                add(1);
+                add(null, '…', false, true);
             }
+
+            for (let i = Math.max(1, current - delta); i <= Math.min(totalPages, current + delta); i++) {
+                add(i, i, i === current);
+            }
+
+            if (current < totalPages - delta) {
+                add(null, '…', false, true);
+                add(totalPages);
+            }
+
+            add(current + 1, '»', false, current === totalPages);
         }
+
+        function setPage(p) {
+            if (p < 1 || p > Math.ceil(state.filtered.length / state.perPage)) return;
+            state.page = p;
+            renderRows();
+            renderPagination();
+        }
+
 
         async function init() {
             const ds = new CsvDataSource('./sample_data.csv');
             state.data = await ds.fetch();
             state.filtered = [...state.data];
 
-            [fTitle, fOffer, fMaxPrice, fDiscount].forEach(el =>
-                el.addEventListener('input', applyFilters)
-            );
+            [fTitle, fOffer, fMaxPrice, fDiscount, fSort]
+                .forEach(el => el.addEventListener('input', applyFilters));
 
             render();
         }
