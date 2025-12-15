@@ -1,247 +1,271 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="es">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Product Catalog</title>
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Animate.css -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="styles.css">
-<base target="_blank">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Proyecto | Ofertas</title>
+
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@500;600&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            /* azul oscuro */
+            --bg-card: #1e293b;
+            /* slate */
+            --bg-soft: #312e81;
+            /* violeta suave */
+            --txt-main: #e5e7eb;
+            --txt-muted: #94a3b8;
+            --accent: #38bdf8;
+            /* azul pastel */
+        }
+
+        body {
+            background: linear-gradient(135deg, var(--bg-main), var(--bg-soft));
+            font-family: Inter, sans-serif;
+            color: var(--txt-main);
+            min-height: 100vh;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: Poppins, sans-serif;
+        }
+
+        /* Layout */
+        .app-layout {
+            display: grid;
+            grid-template-columns: 260px 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 992px) {
+            .app-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Filters */
+        .filters {
+            background: rgba(30, 41, 59, 0.85);
+            border-radius: 0.75rem;
+            padding: 1rem;
+        }
+
+        /* Cards (compactas, casi tabla) */
+        .game-card {
+            background: var(--bg-card);
+            border-radius: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            display: grid;
+            grid-template-columns: 48px 1fr auto;
+            gap: 0.75rem;
+            align-items: center;
+            font-size: 0.85rem;
+        }
+
+        .game-card img {
+            width: 48px;
+            height: 48px;
+            object-fit: cover;
+            border-radius: 0.25rem;
+        }
+
+        .price-old {
+            text-decoration: line-through;
+            color: var(--txt-muted);
+            font-size: 0.75rem;
+        }
+
+        .discount {
+            color: #4ade80;
+            font-weight: 600;
+            font-size: 0.75rem;
+        }
+
+        .pagination .page-link {
+            background: var(--bg-card);
+            color: var(--txt-main);
+            border: none;
+        }
+
+        .pagination .page-item.active .page-link {
+            background: var(--accent);
+            color: #020617;
+        }
+    </style>
 </head>
+
 <body>
-    <!-- Navigation -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container">
-            <a class="navbar-brand fw-bold" href="#">
-                <i class="fas fa-store me-2"></i>Premium Catalog
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link" href="#home">Inicio</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#catalog">Catálogo</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="#about">Acerca</a>
-                    </li>
-                </ul>
-            </div>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section id="home" class="hero-section">
-        <div class="container">
-            <div class="row align-items-center min-vh-100">
-                <div class="col-lg-6">
-                    <div class="hero-content animate__animated animate__fadeInLeft">
-                        <h1 class="display-4 fw-bold mb-4">
-                            Descubre las <span class="text-primary">Mejores Ofertas</span>
-                        </h1>
-                        <p class="lead mb-4">
-                            Explora nuestro catálogo premium con productos cuidadosamente seleccionados. 
-                            Calidad, elegancia y los mejores precios en un solo lugar.
-                        </p>
-                        <button class="btn btn-primary btn-lg rounded-pill px-5 py-3" onclick="scrollToCatalog()">
-                            <i class="fas fa-shopping-bag me-2"></i>Ver Catálogo
-                        </button>
-                    </div>
-                </div>
-                <div class="col-lg-6">
-                    <div class="hero-image animate__animated animate__fadeInRight">
-                        <div class="floating-shapes">
-                            <div class="shape shape-1"></div>
-                            <div class="shape shape-2"></div>
-                            <div class="shape shape-3"></div>
-                        </div>
-                        <i class="fas fa-gem hero-icon"></i>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <main class="container-fluid py-4">
+        <h1 class="mb-4">Ofertas disponibles</h1>
 
-    <!-- Catalog Section -->
-    <section id="catalog" class="catalog-section py-5">
-        <div class="container-fluid">
+        <section class="app-layout">
             <!-- Filters -->
-            <div class="row mb-5">
-                <div class="col-12">
-                    <div class="filters-container bg-white rounded-4 shadow-sm p-4 animate__animated animate__fadeInUp">
-                        <div class="row align-items-center">
-                            <div class="col-md-3">
-                                <div class="filter-group">
-                                    <label class="filter-label">Ordenar por</label>
-                                    <select class="form-select filter-select" id="sortSelect">
-                                        <option value="default">Por defecto</option>
-                                        <option value="price-low">Precio: Menor a Mayor</option>
-                                        <option value="price-high">Precio: Mayor a Menor</option>
-                                        <option value="discount">Mayor Descuento</option>
-                                        <option value="title">Nombre A-Z</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="filter-group">
-                                    <label class="filter-label">Categoría</label>
-                                    <select class="form-select filter-select" id="categorySelect">
-                                        <option value="all">Todas las categorías</option>
-                                        <option value="tech">Tecnología</option>
-                                        <option value="gaming">Gaming</option>
-                                        <option value="home">Hogar</option>
-                                        <option value="office">Oficina</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="filter-group">
-                                    <label class="filter-label">Rango de Precio</label>
-                                    <select class="form-select filter-select" id="priceRange">
-                                        <option value="all">Todos los precios</option>
-                                        <option value="0-100">$0 - $100</option>
-                                        <option value="100-300">$100 - $300</option>
-                                        <option value="300-600">$300 - $600</option>
-                                        <option value="600+">$600+</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <div class="filter-group">
-                                    <label class="filter-label">Descuento</label>
-                                    <select class="form-select filter-select" id="discountFilter">
-                                        <option value="all">Todos los descuentos</option>
-                                        <option value="20+">20% o más</option>
-                                        <option value="25+">25% o más</option>
-                                        <option value="30+">30% o más</option>
-                                    </select>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row mt-3">
-                            <div class="col-12">
-                                <div class="search-container">
-                                    <div class="input-group">
-                                        <span class="input-group-text bg-transparent border-0">
-                                            <i class="fas fa-search text-muted"></i>
-                                        </span>
-                                        <input type="text" class="form-control border-0" id="searchInput" 
-                                               placeholder="Buscar productos por nombre...">
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+            <aside class="filters">
+                <h6 class="mb-3">Filtros</h6>
+
+                <div class="mb-2">
+                    <label class="form-label form-label-sm">Buscar</label>
+                    <input id="filterText" type="text" class="form-control form-control-sm" placeholder="Título…">
                 </div>
-            </div>
 
-            <!-- Loading Spinner -->
-            <div class="text-center py-5" id="loadingSpinner">
-                <div class="spinner-border text-primary" role="status">
-                    <span class="visually-hidden">Cargando...</span>
+                <div class="mb-2">
+                    <label class="form-label form-label-sm">Descuento mínimo</label>
+                    <input id="filterDiscount" type="number" class="form-control form-control-sm" value="0">
                 </div>
-                <p class="mt-3 text-muted">Cargando productos...</p>
-            </div>
+            </aside>
 
-            <!-- Products Grid -->
-            <div class="row" id="productsGrid" style="display: none;">
-                <!-- Products will be dynamically inserted here -->
-            </div>
+            <!-- Content -->
+            <section>
+                <div id="cards" class="d-grid gap-2"></div>
 
-            <!-- No Results -->
-            <div class="text-center py-5" id="noResults" style="display: none;">
-                <i class="fas fa-search fa-3x text-muted mb-3"></i>
-                <h4 class="text-muted">No se encontraron productos</h4>
-                <p class="text-muted">Intenta ajustar tus filtros o búsqueda</p>
-            </div>
+                <nav class="mt-3">
+                    <ul id="pagination" class="pagination pagination-sm"></ul>
+                </nav>
+            </section>
+        </section>
+    </main>
 
-            <!-- Pagination -->
-            <nav aria-label="Paginación de productos" class="mt-5">
-                <ul class="pagination justify-content-center" id="pagination">
-                    <!-- Pagination will be dynamically generated -->
-                </ul>
-            </nav>
-        </div>
-    </section>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
-    <!-- About Section -->
-    <section id="about" class="about-section py-5 bg-light">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 mx-auto text-center">
-                    <h2 class="display-5 fw-bold mb-4">Acerca de Nosotros</h2>
-                    <p class="lead mb-4">
-                        En Premium Catalog, nos apasiona ofrecer los mejores productos con las mejores ofertas. 
-                        Nuestra misión es conectar a nuestros clientes con productos de calidad a precios excepcionales.
-                    </p>
-                    <div class="row mt-5">
-                        <div class="col-md-4">
-                            <div class="feature-item">
-                                <i class="fas fa-shield-alt fa-3x text-primary mb-3"></i>
-                                <h5>Calidad Garantizada</h5>
-                                <p>Todos nuestros productos son cuidadosamente seleccionados</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="feature-item">
-                                <i class="fas fa-truck fa-3x text-primary mb-3"></i>
-                                <h5>Envío Rápido</h5>
-                                <p>Entrega rápida y segura a todo el país</p>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="feature-item">
-                                <i class="fas fa-headset fa-3x text-primary mb-3"></i>
-                                <h5>Soporte 24/7</h5>
-                                <p>Atención al cliente disponible todo el día</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
+    <script>
+        /* ================================
+           Data Source Abstraction
+           CSV hoy / API mañana
+        ================================= */
+        class DataSource {
+            async fetch() { throw new Error('Not implemented'); }
+        }
 
-    <!-- Footer -->
-    <footer class="bg-dark text-white py-4">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <p class="mb-0">&copy; 2024 Premium Catalog. Todos los derechos reservados.</p>
-                </div>
-                <div class="col-md-6 text-end">
-                    <div class="social-links">
-                        <a href="#" class="text-white me-3"><i class="fab fa-facebook"></i></a>
-                        <a href="#" class="text-white me-3"><i class="fab fa-twitter"></i></a>
-                        <a href="#" class="text-white me-3"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="text-white"><i class="fab fa-linkedin"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
+        class CsvDataSource extends DataSource {
+            constructor(url) {
+                super();
+                this.url = url;
+            }
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Custom JS -->
-    <script src="script.js"></script>
+            async fetch() {
+                const res = await fetch(this.url);
+                if (!res.ok) throw new Error('No se pudo cargar el CSV');
+
+                const csvText = await res.text();
+                const [header, ...rows] = csvText.trim().split('\n');
+                const keys = header.split(',');
+
+                return rows.map(row => {
+                    const values = row.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/);
+                    return Object.fromEntries(
+                        keys.map((k, i) => [
+                            k,
+                            values[i]?.replace(/\"/g, '').trim()
+                        ])
+                    );
+                });
+            }
+        }
+
+        /* ================================
+           State
+        ================================= */
+        const state = {
+            data: [],
+            filtered: [],
+            page: 1,
+            perPage: 8
+        };
+
+        /* ================================
+           Rendering
+        ================================= */
+        function renderCards() {
+            const container = document.getElementById('cards');
+            container.innerHTML = '';
+
+            const start = (state.page - 1) * state.perPage;
+            const pageData = state.filtered.slice(start, start + state.perPage);
+
+            pageData.forEach(item => {
+                const el = document.createElement('div');
+                el.className = 'game-card';
+                el.innerHTML = `
+          <img src="${item['Image URL']}" alt="">
+          <div>
+            <strong>${item.Title}</strong><br>
+            <span class="price-old">$${item['Original Price']}</span>
+            <span class="ms-2">$${item['Current Price']}</span>
+            <span class="discount ms-2">-${item['Discount %']}</span>
+          </div>
+          <a href="${item.URL}" target="_blank" class="btn btn-sm btn-outline-info">Ver</a>
+        `;
+                container.appendChild(el);
+            });
+        }
+
+        function renderPagination() {
+            const totalPages = Math.ceil(state.filtered.length / state.perPage);
+            const ul = document.getElementById('pagination');
+            ul.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const li = document.createElement('li');
+                li.className = `page-item ${i === state.page ? 'active' : ''}`;
+                li.innerHTML = `<button class="page-link">${i}</button>`;
+                li.onclick = () => {
+                    state.page = i;
+                    renderCards();
+                    renderPagination();
+                };
+                ul.appendChild(li);
+            }
+        }
+
+        /* ================================
+           Filters
+        ================================= */
+        function applyFilters() {
+            const text = document.getElementById('filterText').value.toLowerCase();
+            const minDiscount = Number(document.getElementById('filterDiscount').value || 0);
+
+            state.filtered = state.data.filter(item => {
+                const discount = parseFloat(item['Discount %']);
+                return item.Title.toLowerCase().includes(text) && discount >= minDiscount;
+            });
+
+            state.page = 1;
+            renderCards();
+            renderPagination();
+        }
+
+        /* ================================
+           Bootstrap
+        ================================= */
+        async function init() {
+            const csv = `ID,Title,Original Price,Current Price,Discount %,Offer,URL,Image URL
+9pnvdqkpjrqv,SILENT HILL 2,79999.0,39999.5,50.00%,Ahorra,https://www.xbox.com/es-ar/games/store/silent-hill-2/9pnvdqkpjrqv,https://store-images.s-microsoft.com/image/apps.46297.14341421973666013.292233f8-d8a7-4ef0-bb49-824c7b2154f4.81d7f7ad-4f3e-4936-a29c-a076fe289fab`;
+
+            const source = new CsvDataSource('./sample_data.csv');
+            state.data = await source.fetch();
+            state.filtered = [...state.data];
+
+            document.getElementById('filterText').addEventListener('input', applyFilters);
+            document.getElementById('filterDiscount').addEventListener('input', applyFilters);
+
+            renderCards();
+            renderPagination();
+        }
+
+        init();
+    </script>
 </body>
+
 </html>
