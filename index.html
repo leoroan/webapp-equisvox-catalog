@@ -2,378 +2,416 @@
 <html lang="es">
 
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Proyecto | Ofertas</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Proyecto | Ofertas</title>
 
-  <!-- Bootstrap -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
-  <!-- Fonts -->
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@500;600&display=swap"
-    rel="stylesheet">
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500&family=Poppins:wght@500;600&display=swap"
+        rel="stylesheet">
 
-  <style>
-    :root {
-      --bg-main: #0b1220;
-      --bg-soft: #1e1b4b;
-      --bg-card: #111827;
-      --txt-main: #e5e7eb;
-      --txt-muted: #94a3b8;
-      --accent: #60a5fa;
-      --danger: #dc2626;
-    }
+    <style>
+        :root {
+            --bg-main: #0b1220;
+            --bg-soft: #1e1b4b;
+            --bg-card: #111827;
+            --txt-main: #e5e7eb;
+            --txt-muted: #94a3b8;
+            --accent: #60a5fa;
+            --danger: #dc2626;
+        }
 
-    body {
-      background: linear-gradient(135deg, var(--bg-main), var(--bg-soft));
-      font-family: Inter, sans-serif;
-      color: var(--txt-main);
-      min-height: 100vh;
-    }
+        body {
+            background: linear-gradient(135deg, var(--bg-main), var(--bg-soft));
+            font-family: Inter, sans-serif;
+            color: var(--txt-main);
+            min-height: 100vh;
+        }
 
-    h1 {
-      font-family: Poppins, sans-serif;
-    }
+        h1 {
+            font-family: Poppins, sans-serif;
+        }
 
-    /* Layout */
-    .layout {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 1rem;
-    }
+        /* Layout */
+        .layout {
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            gap: 1rem;
+        }
 
-    @media (max-width: 992px) {
-      .layout {
-        grid-template-columns: 1fr;
-      }
-    }
+        @media (max-width: 992px) {
+            .layout {
+                grid-template-columns: 1fr;
+            }
+        }
 
-    /* Filters */
-    .filters {
-      background: rgba(17, 24, 39, 0.9);
-      border-radius: .75rem;
-      padding: 1rem;
-      font-size: .85rem;
-      height: fit-content;
-    }
+        /* Filters */
+        .filters {
+            background: rgba(17, 24, 39, 0.9);
+            border-radius: .75rem;
+            padding: 1rem;
+            font-size: .85rem;
+            height: fit-content;
+        }
 
-    .filters label {
-      font-size: .7rem;
-      color: var(--txt-muted);
-    }
+        .filters label {
+            font-size: .7rem;
+            color: var(--txt-muted);
+        }
 
-    .filters h6 {
-      font-size: .8rem;
-      text-transform: uppercase;
-      letter-spacing: .05em;
-    }
+        .filters h6 {
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
 
-    .filters .form-control,
-    .filters .form-select {
-      background: #020617;
-      border: 1px solid #1e293b;
-      color: var(--txt-main);
-    }
+        .filters .form-control,
+        .filters .form-select {
+            background: #020617;
+            border: 1px solid #1e293b;
+            color: var(--txt-main);
+        }
 
-    /* Table */
-    .table-wrap {
-      background: rgba(17, 24, 39, 0.9);
-      border-radius: .75rem;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-      height: 100%;
-    }
+        /* Table */
+        .table-wrap {
+            background: rgba(17, 24, 39, 0.9);
+            border-radius: .75rem;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
 
-    table {
-      color: var(--txt-main);
-      font-size: .85rem;
-    }
+        table {
+            color: var(--txt-main);
+            font-size: .85rem;
+        }
 
-    thead {
-      background: #020617;
-    }
+        thead {
+            background: #020617;
+        }
 
-    th {
-      font-weight: 500;
-      color: var(--txt-muted);
-    }
+        th {
+            font-weight: 500;
+            color: var(--txt-muted);
+        }
 
-    th.sortable {
-      cursor: pointer;
-      user-select: none;
-    }
+        th.sortable {
+            cursor: pointer;
+            user-select: none;
+        }
 
-    th.sortable::after {
-      content: '↕';
-      font-size: .65rem;
-      margin-left: .25rem;
-      color: var(--txt-muted);
-    }
+        th.sortable::after {
+            content: '↕';
+            font-size: .65rem;
+            margin-left: .25rem;
+            color: var(--txt-muted);
+        }
 
-    th.sorted-asc::after { content: '↑'; }
-    th.sorted-desc::after { content: '↓'; }
+        th.sorted-asc::after {
+            content: '↑';
+        }
 
-    .table-wrap tbody {
-      display: block;
-      overflow-y: auto;
-    }
+        th.sorted-desc::after {
+            content: '↓';
+        }
 
-    .table-wrap thead,
-    .table-wrap tbody tr {
-      display: table;
-      width: 100%;
-      table-layout: fixed;
-    }
+        .table-wrap tbody {
+            display: block;
+            overflow-y: auto;
+        }
 
-    .table td,
-    .table th {
-      padding: .9rem .75rem;
-      vertical-align: middle;
-    }
+        .table-wrap thead,
+        .table-wrap tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
 
-    .table tbody tr {
-      height: 68px;
-    }
+        .table td,
+        .table th {
+            padding: .9rem .75rem;
+            vertical-align: middle;
+        }
 
-    tbody tr:hover {
-      background: rgba(96, 165, 250, 0.08);
-    }
+        .table tbody tr {
+            height: 68px;
+        }
 
-    /* Row highlight */
-    .row-hot {
-      background: linear-gradient(
-        90deg,
-        rgba(220, 38, 38, 0.14),
-        rgba(220, 38, 38, 0.03)
-      );
-    }
+        tbody tr:hover {
+            background: rgba(96, 165, 250, 0.08);
+        }
 
-    .row-hot:hover {
-      background: linear-gradient(
-        90deg,
-        rgba(220, 38, 38, 0.22),
-        rgba(220, 38, 38, 0.06)
-      );
-    }
+        /* Row highlight */
+        .row-hot {
+            background: linear-gradient(90deg,
+                    rgba(220, 38, 38, 0.14),
+                    rgba(220, 38, 38, 0.03));
+        }
 
-    .game-icon {
-      width: 40px;
-      height: 40px;
-      border-radius: .5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #1e293b, #020617);
-      color: var(--accent);
-      cursor: pointer;
-    }
+        .row-hot:hover {
+            background: linear-gradient(90deg,
+                    rgba(220, 38, 38, 0.22),
+                    rgba(220, 38, 38, 0.06));
+        }
 
-    /* Pagination */
-    .pagination {
-      margin: 0;
-    }
+        .game-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: .5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e293b, #020617);
+            color: var(--accent);
+            cursor: pointer;
+        }
 
-    .pagination .page-link {
-      background: transparent;
-      color: var(--txt-main);
-      border: none;
-      border-radius: .4rem;
-    }
+        /* Pagination */
+        .pagination {
+            margin: 0;
+        }
 
-    .pagination .page-item.active .page-link {
-      background: linear-gradient(135deg, #1e40af, #020617);
-      color: #e5e7eb;
-    }
+        .pagination .page-link {
+            background: transparent;
+            color: var(--txt-main);
+            border: none;
+            border-radius: .4rem;
+        }
 
-    .pagination .page-link:hover {
-      background: rgba(96, 165, 250, 0.15);
-    }
+        .pagination .page-item.active .page-link {
+            background: linear-gradient(135deg, #1e40af, #020617);
+            color: #e5e7eb;
+        }
 
-    .container-xl {
-      max-width: 1400px;
-    }
-  </style>
+        .pagination .page-link:hover {
+            background: rgba(96, 165, 250, 0.15);
+        }
+
+        .container-xl {
+            max-width: 1400px;
+        }
+    </style>
 </head>
 
 <body>
 
-<main class="container-xl py-4 h-100">
-  <h1 class="mb-4">Ofertas</h1>
+    <main class="container-xl py-4 h-100">
+        <h1 class="mb-4">Ofertas</h1>
 
-  <section class="layout">
+        <section class="layout">
 
-    <!-- Filters -->
-    <aside class="filters">
-      <h6 class="mb-3">Filtros</h6>
+            <!-- Filters -->
+            <aside class="filters">
+                <h6 class="mb-3">Filtros</h6>
 
-      <div class="mb-2">
-        <label>Título</label>
-        <input id="fTitle" class="form-control form-control-sm" placeholder="Buscar…">
-      </div>
+                <div class="mb-2">
+                    <label>Título</label>
+                    <input id="fTitle" class="form-control form-control-sm" placeholder="Buscar…">
+                </div>
 
-      <div class="mb-2">
-        <label>Precio máximo</label>
-        <input id="fMaxPrice" type="number" class="form-control form-control-sm" placeholder="$">
-      </div>
+                <div class="mb-2">
+                    <label>Precio máximo</label>
+                    <input id="fMaxPrice" type="number" class="form-control form-control-sm" placeholder="$">
+                </div>
 
-      <div class="mb-2">
-        <label>Descuento mínimo (%)</label>
-        <select id="fDiscount" class="form-select form-select-sm">
-          <option value="0">Cualquiera</option>
-          <option value="25">25%+</option>
-          <option value="50">50%+</option>
-          <option value="75">75%+</option>
-        </select>
-      </div>
-    </aside>
+                <div class="mb-2">
+                    <label>Descuento mínimo (%)</label>
+                    <select id="fDiscount" class="form-select form-select-sm">
+                        <option value="0">Cualquiera</option>
+                        <option value="25">25%+</option>
+                        <option value="50">50%+</option>
+                        <option value="75">75%+</option>
+                    </select>
+                </div>
+            </aside>
 
-    <!-- Table -->
-    <section class="table-wrap">
-      <table class="table table-dark table-sm align-middle">
-        <thead>
-          <tr>
-            <th></th>
-            <th class="sortable" data-sort="title">Título</th>
-            <th class="sortable" data-sort="current">Precio</th>
-            <th class="sortable" data-sort="discount">Descuento</th>
-            <th>Oferta</th>
-            <th></th>
-          </tr>
-        </thead>
-        <tbody id="rows"></tbody>
-      </table>
+            <!-- Table -->
+            <section class="table-wrap">
+                <table class="table table-dark table-sm align-middle">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th class="sortable" data-sort="title">Título</th>
+                            <th class="sortable" data-sort="current">Precio</th>
+                            <th class="sortable" data-sort="discount">Descuento</th>
+                            <th>Oferta</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody id="rows"></tbody>
+                </table>
 
-      <nav class="d-flex justify-content-end p-2">
-        <ul id="pagination" class="pagination pagination-sm"></ul>
-      </nav>
-    </section>
-  </section>
-</main>
+                <nav class="d-flex justify-content-end p-2">
+                    <ul id="pagination" class="pagination pagination-sm"></ul>
+                </nav>
+            </section>
+        </section>
+    </main>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  class CsvDataSource {
-    constructor(url) { this.url = url; }
-    async fetch() {
-      const res = await fetch(this.url);
-      const text = await res.text();
-      const [h, ...r] = text.trim().split('\n');
-      const headers = h.split(',');
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        class CsvDataSource {
+            constructor(url) { this.url = url; }
+            async fetch() {
+                const res = await fetch(this.url);
+                const text = await res.text();
+                const [h, ...r] = text.trim().split('\n');
+                const headers = h.split(',');
 
-      return r.map(row => {
-        const v = row.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/)
-          .map(x => x.replace(/"/g, '').trim());
-        const o = Object.fromEntries(headers.map((k, i) => [k, v[i]]));
-        return {
-          title: o.Title,
-          original: +o['Original Price'],
-          current: +o['Current Price'],
-          discount: +o['Discount %'] || 0,
-          offer: o.Offer,
-          url: o.URL
+                return r.map(row => {
+                    const v = row.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/)
+                        .map(x => x.replace(/"/g, '').trim());
+                    const o = Object.fromEntries(headers.map((k, i) => [k, v[i]]));
+                    return {
+                        title: o.Title,
+                        original: +o['Original Price'],
+                        current: +o['Current Price'],
+                        discount: Number(o['Discount %']?.replace('%', '')) || 0,
+                        offer: o.Offer,
+                        url: o.URL
+                    };
+                });
+            }
+        }
+
+        const state = {
+            data: [],
+            filtered: [],
+            page: 1,
+            perPage: 10,
+            sort: { key: 'title', dir: 'asc' }
         };
-      });
-    }
-  }
 
-  const state = {
-    data: [],
-    filtered: [],
-    page: 1,
-    perPage: 10,
-    sort: { key: 'title', dir: 'asc' }
-  };
+        function sorter(a, b) {
+            const { key, dir } = state.sort;
+            const m = dir === 'asc' ? 1 : -1;
+            return typeof a[key] === 'string'
+                ? a[key].localeCompare(b[key]) * m
+                : (a[key] - b[key]) * m;
+        }
 
-  function sorter(a, b) {
-    const { key, dir } = state.sort;
-    const m = dir === 'asc' ? 1 : -1;
-    return typeof a[key] === 'string'
-      ? a[key].localeCompare(b[key]) * m
-      : (a[key] - b[key]) * m;
-  }
+        function applyFilters() {
+            const title = fTitle.value.toLowerCase();
+            const max = Number(fMaxPrice.value || Infinity);
+            const minDisc = Number(fDiscount.value);
 
-  function applyFilters() {
-    const title = fTitle.value.toLowerCase();
-    const max = Number(fMaxPrice.value || Infinity);
-    const minDisc = Number(fDiscount.value);
+            state.filtered = state.data
+                .filter(i =>
+                    i.title.toLowerCase().includes(title) &&
+                    i.current <= max &&
+                    i.discount >= minDisc
+                )
+                .sort(sorter);
 
-    state.filtered = state.data
-      .filter(i =>
-        i.title.toLowerCase().includes(title) &&
-        i.current <= max &&
-        i.discount >= minDisc
-      )
-      .sort(sorter);
+            state.page = 1;
+            render();
+        }
 
-    state.page = 1;
-    render();
-  }
+        function render() {
+            renderRows();
+            renderPagination();
+            updateSortIndicators();
+        }
 
-  function render() {
-    renderRows();
-    renderPagination();
-    updateSortIndicators();
-  }
+        function renderRows() {
+            rows.innerHTML = '';
+            const start = (state.page - 1) * state.perPage;
+            const page = state.filtered.slice(start, start + state.perPage);
 
-  function renderRows() {
-    rows.innerHTML = '';
-    const start = (state.page - 1) * state.perPage;
-    const page = state.filtered.slice(start, start + state.perPage);
+            page.forEach(i => {
+                const tr = document.createElement('tr');
+                if (i.discount >= 50) tr.classList.add('row-hot');
 
-    page.forEach(i => {
-      rows.innerHTML += `
-        <tr class="${i.discount >= 50 ? 'row-hot' : ''}">
-          <td><div class="game-icon"><i class="bi bi-controller"></i></div></td>
-          <td>${i.title}</td>
-          <td><s>$${i.original}</s><br>$${i.current}</td>
-          <td>${i.discount}%</td>
-          <td>${i.offer}</td>
-          <td><a href="${i.url}" target="_blank" class="btn btn-sm btn-outline-info">Ver</a></td>
-        </tr>`;
-    });
-  }
+                tr.innerHTML = `
+    <td><div class="game-icon"><i class="bi bi-controller"></i></div></td>
+    <td>${i.title}</td>
+    <td><s>$${i.original}</s><br>$${i.current}</td>
+    <td>${i.discount}%</td>
+    <td>${i.offer}</td>
+    <td>
+      <a href="${i.url}" target="_blank"
+         class="btn btn-sm btn-outline-info"
+         onclick="event.stopPropagation()">
+        Ver
+      </a>
+    </td>
+  `;
 
-  function renderPagination() {
-    const pages = Math.ceil(state.filtered.length / state.perPage);
-    pagination.innerHTML = '';
-    for (let i = 1; i <= pages; i++) {
-      pagination.innerHTML += `
-        <li class="page-item ${i === state.page ? 'active' : ''}">
-          <button class="page-link" onclick="state.page=${i};render()">${i}</button>
-        </li>`;
-    }
-  }
+                tr.addEventListener('click', () => openDetail(i));
+                rows.appendChild(tr);
+            });
+        }
 
-  function updateSortIndicators() {
-    document.querySelectorAll('th[data-sort]').forEach(th => {
-      th.classList.remove('sorted-asc', 'sorted-desc');
-      if (th.dataset.sort === state.sort.key) {
-        th.classList.add(state.sort.dir === 'asc' ? 'sorted-asc' : 'sorted-desc');
-      }
-    });
-  }
+        function renderPagination() {
+            const pages = Math.ceil(state.filtered.length / state.perPage);
+            const range = 2;
+            pagination.innerHTML = '';
 
-  document.querySelectorAll('th[data-sort]').forEach(th => {
-    th.addEventListener('click', () => {
-      const key = th.dataset.sort;
-      state.sort.dir = state.sort.key === key && state.sort.dir === 'asc' ? 'desc' : 'asc';
-      state.sort.key = key;
-      applyFilters();
-    });
-  });
+            const start = Math.max(1, state.page - range);
+            const end = Math.min(pages, state.page + range);
 
-  async function init() {
-    const ds = new CsvDataSource('./sample_data.csv');
-    state.data = await ds.fetch();
-    state.filtered = [...state.data];
-    [fTitle, fMaxPrice, fDiscount].forEach(el => el.addEventListener('input', applyFilters));
-    render();
-  }
+            if (state.page > 1) {
+                pagination.innerHTML += `
+      <li class="page-item">
+        <button class="page-link" onclick="state.page--;render()">‹</button>
+      </li>`;
+            }
 
-  init();
-</script>
+            for (let i = start; i <= end; i++) {
+                pagination.innerHTML += `
+      <li class="page-item ${i === state.page ? 'active' : ''}">
+        <button class="page-link" onclick="state.page=${i};render()">${i}</button>
+      </li>`;
+            }
+
+            if (state.page < pages) {
+                pagination.innerHTML += `
+      <li class="page-item">
+        <button class="page-link" onclick="state.page++;render()">›</button>
+      </li>`;
+            }
+        }
+
+        function updateSortIndicators() {
+            document.querySelectorAll('th[data-sort]').forEach(th => {
+                th.classList.remove('sorted-asc', 'sorted-desc');
+                if (th.dataset.sort === state.sort.key) {
+                    th.classList.add(state.sort.dir === 'asc' ? 'sorted-asc' : 'sorted-desc');
+                }
+            });
+        }
+
+        document.querySelectorAll('th[data-sort]').forEach(th => {
+            th.addEventListener('click', () => {
+                const key = th.dataset.sort;
+                state.sort.dir = state.sort.key === key && state.sort.dir === 'asc' ? 'desc' : 'asc';
+                state.sort.key = key;
+                applyFilters();
+            });
+        });
+
+        function openDetail(item) {
+            console.log('Detalle:', item);
+            // acá abrís modal / drawer / redirect
+        }
+
+        async function init() {
+            const ds = new CsvDataSource('./sample_data.csv');
+            state.data = await ds.fetch();
+            state.filtered = [...state.data];
+            [fTitle, fMaxPrice, fDiscount].forEach(el => el.addEventListener('input', applyFilters));
+            render();
+        }
+
+        init();
+
+    </script>
 
 </body>
+
 </html>
