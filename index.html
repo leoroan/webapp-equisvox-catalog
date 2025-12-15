@@ -62,6 +62,29 @@
             color: var(--txt-muted);
         }
 
+        .filters {
+            position: sticky;
+            top: 1rem;
+            height: fit-content;
+        }
+
+        .filters h6 {
+            font-size: .8rem;
+            text-transform: uppercase;
+            letter-spacing: .05em;
+        }
+
+        .filters .form-control,
+        .filters .form-select {
+            background: #020617;
+            border: 1px solid #1e293b;
+            color: var(--txt-main);
+        }
+
+        .filters .form-control::placeholder {
+            color: var(--txt-muted);
+        }
+
         /* Table */
         .table-wrap {
             background: rgba(17, 24, 39, 0.9);
@@ -148,12 +171,70 @@
         .badge-hot {
             background: #ef4444;
         }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        main {
+            height: calc(100vh - 2rem);
+        }
+
+        .table-wrap {
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .table-wrap table {
+            flex: 1;
+        }
+
+        .table-wrap tbody {
+            display: block;
+            overflow-y: auto;
+        }
+
+        .table-wrap thead,
+        .table-wrap tbody tr {
+            display: table;
+            width: 100%;
+            table-layout: fixed;
+        }
+
+        .table td,
+        .table th {
+            padding: .75rem .75rem;
+            vertical-align: middle;
+        }
+
+        .table tbody tr {
+            height: 64px;
+        }
+
+        .row-hot {
+            background: linear-gradient(90deg,
+                    rgba(239, 68, 68, 0.15),
+                    rgba(239, 68, 68, 0.03));
+        }
+
+        .row-hot:hover {
+            background: linear-gradient(90deg,
+                    rgba(239, 68, 68, 0.25),
+                    rgba(239, 68, 68, 0.08));
+        }
+
+        .container-xl {
+            max-width: 1400px;
+        }
     </style>
 </head>
 
 <body>
 
-    <main class="container-fluid py-4">
+    <main class="container-xl py-4 h-100">
+
         <h1 class="mb-4">Ofertas</h1>
 
         <section class="layout">
@@ -328,7 +409,9 @@
                         : i.current < 2000
                             ? `<span class="badge badge-cheap ms-1">OFERTA</span>`
                             : '';
-                            
+                const rowClass =
+                    i.current < 1000 ? 'row-hot' : '';
+
                 rows.innerHTML += `
                     <tr>
                       <td>
@@ -405,10 +488,15 @@
             state.data = await ds.fetch();
             state.filtered = [...state.data];
 
-            [fTitle, fOffer, fMaxPrice, fDiscount, fSort]
-                .forEach(el => el.addEventListener('input', applyFilters));
+            // [fTitle, fOffer, fMaxPrice, fDiscount, fSort]
+            //     .forEach(el => el.addEventListener('input', applyFilters));
 
-            render();
+            // render();
+            calcPerPage();
+            window.addEventListener('resize', () => {
+                calcPerPage();
+                render();
+            });
         }
 
         init();
@@ -431,6 +519,12 @@
             modal.show();
         }
 
+        function calcPerPage() {
+            const rowHeight = 72;
+            const available =
+                document.querySelector('.table-wrap').offsetHeight - 56;
+            state.perPage = Math.max(5, Math.floor(available / rowHeight));
+        }
     </script>
 
 </body>
