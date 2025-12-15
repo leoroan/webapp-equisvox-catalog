@@ -123,6 +123,22 @@
             color: #020617;
             border-radius: .25rem;
         }
+
+        .game-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: .5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #1e293b, #020617);
+            color: #60a5fa;
+            cursor: pointer;
+        }
+
+        .game-icon:hover {
+            background: linear-gradient(135deg, #1e40af, #020617);
+        }
     </style>
 </head>
 
@@ -184,6 +200,25 @@
             </section>
         </section>
     </main>
+
+    <div class="modal fade" id="detailModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-dark text-light">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="detailTitle"></h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body text-center">
+                    <img id="detailImage" class="img-fluid rounded mb-3" alt="">
+                    <p id="detailOffer" class="text-muted"></p>
+                    <p>
+                        <span class="old-price" id="detailOriginal"></span><br>
+                        <strong id="detailCurrent"></strong>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -259,17 +294,13 @@
             const start = (state.page - 1) * state.perPage;
             const page = state.filtered.slice(start, start + state.perPage);
 
-            page.forEach(i => {
+            page.forEach((i, idx) => {
                 rows.innerHTML += `
       <tr>
         <td>
-          <img
-            src="${i.imageUrl || PLACEHOLDER_IMG}"
-            alt="Portada de ${i.title}"
-            class="game-img"
-            loading="lazy"
-            onerror="this.onerror=null;this.src=PLACEHOLDER_IMG"
-          >
+          <div class="game-icon" onclick="openDetail(${start + idx})">
+            <i class="bi bi-controller fs-5"></i>
+          </div>
         </td>
         <td>${i.title}</td>
         <td>
@@ -287,6 +318,7 @@
     `;
             });
         }
+
 
 
         function renderPagination() {
@@ -314,7 +346,27 @@
         }
 
         init();
+
+
+        const modal = new bootstrap.Modal(
+            document.getElementById('detailModal')
+        );
+
+        function openDetail(index) {
+            const i = state.filtered[index];
+
+            detailTitle.textContent = i.title;
+            detailOffer.textContent = i.offer;
+            detailOriginal.textContent = `$${i.original}`;
+            detailCurrent.textContent = `$${i.current}`;
+            detailImage.src = i.imageUrl || PLACEHOLDER_IMG;
+            detailImage.alt = `Portada de ${i.title}`;
+
+            modal.show();
+        }
+
     </script>
+
 </body>
 
 </html>
