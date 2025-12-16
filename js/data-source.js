@@ -1,5 +1,5 @@
 // API Data Source
-class ApiDataSource {
+export class ApiDataSource {
     constructor(url) {
         this.url = url
     }
@@ -39,6 +39,3 @@ class ApiDataSource {
         }
     }
 }
-
-// Make it globally accessible
-window.ApiDataSource = ApiDataSource

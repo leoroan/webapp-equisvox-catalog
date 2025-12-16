@@ -1,5 +1,7 @@
 // Pagination Component
-const PaginationComponent = {
+import { AppState } from "./state.js"
+
+export const PaginationComponent = {
     container: null,
 
     init() {
@@ -7,8 +9,8 @@ const PaginationComponent = {
     },
 
     render() {
-        const totalPages = window.AppState.getTotalPages()
-        const currentPage = window.AppState.page
+        const totalPages = AppState.getTotalPages()
+        const currentPage = AppState.page
 
         if (totalPages <= 1) {
             this.container.innerHTML = ""
@@ -80,14 +82,12 @@ const PaginationComponent = {
     attachEventListeners() {
         this.container.querySelectorAll("button[data-page]").forEach((btn) => {
             btn.addEventListener("click", () => {
-                window.AppState.page = Number(btn.dataset.page)
-                window.TableComponent.render()
+                AppState.page = Number(btn.dataset.page)
+
+                import("./table.js").then(({ TableComponent }) => TableComponent.render())
                 this.render()
                 window.scrollTo({ top: 0, behavior: "smooth" })
             })
         })
     },
 }
-
-// Make it globally accessible
-window.PaginationComponent = PaginationComponent

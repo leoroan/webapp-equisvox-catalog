@@ -1,5 +1,5 @@
 // Configuration Manager
-const AppConfig = {
+export const AppConfig = {
     // Default configuration
     defaults: {
         discountThreshold: 50,
@@ -47,6 +47,3 @@ const AppConfig = {
         return config
     },
 }
-
-// Make it globally accessible
-window.AppConfig = AppConfig

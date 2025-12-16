@@ -1,5 +1,7 @@
 // Modal Component
-const ModalComponent = {
+import { AppState } from "./state.js"
+
+export const ModalComponent = {
     modal: null,
     bsModal: null,
 
@@ -52,7 +54,7 @@ const ModalComponent = {
                         <p class="mb-0">${item.offer}</p>
                     </div>
                     
-                    ${item.discount >= window.AppState.config.discountThreshold
+                    ${item.discount >= AppState.config.discountThreshold
                 ? `
                         <div class="alert alert-danger mb-0">
                             <i class="bi bi-fire me-2"></i>
@@ -62,11 +64,11 @@ const ModalComponent = {
                 : ""
             }
                     
-                    ${item.current < window.AppState.config.priceThreshold
+                    ${item.current < AppState.config.priceThreshold
                 ? `
                         <div class="alert alert-success mb-0 mt-2">
                             <i class="bi bi-tag-fill me-2"></i>
-                            <strong>¡Precio increíble!</strong> Menor a $${window.AppState.config.priceThreshold.toLocaleString()}
+                            <strong>¡Precio increíble!</strong> Menor a $${AppState.config.priceThreshold.toLocaleString()}
                         </div>
                     `
                 : ""
@@ -78,6 +80,3 @@ const ModalComponent = {
         this.bsModal.show()
     },
 }
-
-// Make it globally accessible
-window.ModalComponent = ModalComponent

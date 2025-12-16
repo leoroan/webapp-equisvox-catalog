@@ -1,4 +1,6 @@
 // Admin Panel Script
+import { AppConfig } from "./config.js"
+
 document.addEventListener("DOMContentLoaded", () => {
     const discountInput = document.getElementById("discountThreshold")
     const priceInput = document.getElementById("priceThreshold")
@@ -9,7 +11,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const previewPrice = document.getElementById("previewPrice")
 
     // Load current config
-    const config = window.AppConfig.get()
+    const config = AppConfig.get()
     discountInput.value = config.discountThreshold
     priceInput.value = config.priceThreshold
     itemsPerPageSelect.value = config.itemsPerPage
@@ -34,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
             apiUrl: config.apiUrl,
         }
 
-        window.AppConfig.save(newConfig)
+        AppConfig.save(newConfig)
 
         // Show success message
         const alert = document.createElement("div")
@@ -54,7 +56,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // Reset configuration
     resetBtn.addEventListener("click", () => {
         if (confirm("¿Está seguro de restaurar la configuración por defecto?")) {
-            const defaults = window.AppConfig.reset()
+            const defaults = AppConfig.reset()
             discountInput.value = defaults.discountThreshold
             priceInput.value = defaults.priceThreshold
             itemsPerPageSelect.value = defaults.itemsPerPage

@@ -62,7 +62,7 @@
                     <div class="card-body p-0">
                         <div class="table-responsive">
                             <table class="table table-hover align-middle mb-0" id="offersTable">
-                                <thead class="table-dark sticky-top">
+                                <!-- <thead class="table-dark sticky-top">
                                     <tr>
                                         <th style="width: 80px;">Imagen</th>
                                         <th class="sortable" data-sort="title">
@@ -76,6 +76,31 @@
                                         <th class="sortable" data-sort="discount" style="width: 120px;">
                                             Descuento
                                             <i class="bi bi-arrow-down-up ms-1"></i>
+                                        </th>
+                                        <th style="width: 200px;">Oferta</th>
+                                        <th style="width: 100px;">Acción</th>
+                                    </tr>
+                                </thead> -->
+                                <thead class="table-dark sticky-top">
+                                    <tr>
+                                        <th style="width: 80px;">Imagen</th>
+                                        <th class="sortable" data-sort="title" style="min-width: 150px;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Título</span>
+                                                <i class="bi bi-arrow-down-up ms-1"></i>
+                                            </div>
+                                        </th>
+                                        <th class="sortable" data-sort="current" style="width: 140px;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Precio</span>
+                                                <i class="bi bi-arrow-down-up ms-1"></i>
+                                            </div>
+                                        </th>
+                                        <th class="sortable" data-sort="discount" style="width: 120px;">
+                                            <div class="d-flex justify-content-between align-items-center">
+                                                <span>Descuento</span>
+                                                <i class="bi bi-arrow-down-up ms-1"></i>
+                                            </div>
                                         </th>
                                         <th style="width: 200px;">Oferta</th>
                                         <th style="width: 100px;">Acción</th>
@@ -130,15 +155,8 @@
         integrity="sha384-G/EV+4j2dNv+tEPo3++6LCgdCROaejBqfUeNjuKAiuXbjrxilcCdDz6ZAVfHWe1Y"
         crossorigin="anonymous"></script>
 
-    <!-- App Modules -->
-    <script src="js/config.js"></script>
-    <script src="js/data-source.js"></script>
-    <script src="js/state.js"></script>
-    <script src="js/filters.js"></script>
-    <script src="js/table.js"></script>
-    <script src="js/modal.js"></script>
-    <script src="js/pagination.js"></script>
-    <script src="js/app.js"></script>
+    <!-- Switched to ES6 module entry point -->
+    <script type="module" src="js/app.js"></script>
 </body>
 
 </html>

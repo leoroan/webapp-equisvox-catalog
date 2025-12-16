@@ -1,5 +1,8 @@
 // Table Component
-const TableComponent = {
+import { AppState } from "./state.js"
+import { ModalComponent } from "./modal.js"
+
+export const TableComponent = {
     tbody: null,
     thead: null,
 
@@ -14,7 +17,7 @@ const TableComponent = {
         sortableHeaders.forEach((header) => {
             header.addEventListener("click", () => {
                 const sortKey = header.dataset.sort
-                window.AppState.setSort(sortKey)
+                AppState.setSort(sortKey)
                 this.render()
                 this.updateSortIndicators()
             })
@@ -25,14 +28,14 @@ const TableComponent = {
         const headers = this.thead.querySelectorAll(".sortable")
         headers.forEach((header) => {
             header.classList.remove("sorted-asc", "sorted-desc")
-            if (header.dataset.sort === window.AppState.sort.key) {
-                header.classList.add(`sorted-${window.AppState.sort.dir}`)
+            if (header.dataset.sort === AppState.sort.key) {
+                header.classList.add(`sorted-${AppState.sort.dir}`)
             }
         })
     },
 
     render() {
-        const items = window.AppState.getPageItems()
+        const items = AppState.getPageItems()
 
         if (items.length === 0) {
             this.tbody.innerHTML = `
@@ -49,10 +52,10 @@ const TableComponent = {
         this.tbody.innerHTML = items
             .map((item) => {
                 const rowClasses = []
-                if (window.AppState.shouldHighlightDiscount(item)) {
+                if (AppState.shouldHighlightDiscount(item)) {
                     rowClasses.push("row-high-discount")
                 }
-                if (window.AppState.shouldHighlightPrice(item)) {
+                if (AppState.shouldHighlightPrice(item)) {
                     rowClasses.push("row-low-price")
                 }
 
@@ -78,7 +81,7 @@ const TableComponent = {
                     </td>
                     <td>
                         <span class="badge badge-discount ${discountBadgeClass}">
-                            <i class="bi bi-percent me-1"></i>${item.discount}%
+                            <i class="bi bi-percent me-1"></i>${item.discount}
                         </span>
                     </td>
                     <td>
@@ -106,8 +109,8 @@ const TableComponent = {
             row.addEventListener("click", (e) => {
                 if (e.target.closest("button")) return
                 const id = row.dataset.id
-                const item = window.AppState.data.find((i) => i.id === id)
-                if (item) window.ModalComponent.open(item)
+                const item = AppState.data.find((i) => i.id === id)
+                if (item) ModalComponent.open(item)
             })
         })
 
@@ -116,12 +119,9 @@ const TableComponent = {
             btn.addEventListener("click", (e) => {
                 e.stopPropagation()
                 const id = btn.dataset.id
-                const item = window.AppState.data.find((i) => i.id === id)
-                if (item) window.ModalComponent.open(item)
+                const item = AppState.data.find((i) => i.id === id)
+                if (item) ModalComponent.open(item)
             })
         })
     },
 }
-
-// Make it globally accessible
-window.TableComponent = TableComponent

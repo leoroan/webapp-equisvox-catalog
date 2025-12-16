@@ -1,13 +1,20 @@
 // Main Application
+import { AppState } from "./state.js"
+import { ApiDataSource } from "./data-source.js"
+import { FiltersComponent } from "./filters.js"
+import { TableComponent } from "./table.js"
+import { ModalComponent } from "./modal.js"
+import { PaginationComponent } from "./pagination.js"
+
 const App = {
     async init() {
         try {
-            window.AppState.init()
+            AppState.init()
 
-            window.FiltersComponent.init()
-            window.TableComponent.init()
-            window.ModalComponent.init()
-            window.PaginationComponent.init()
+            FiltersComponent.init()
+            TableComponent.init()
+            ModalComponent.init()
+            PaginationComponent.init()
 
             // Show loading state
             document.getElementById("tableBody").innerHTML = `
@@ -22,14 +29,14 @@ const App = {
             `
 
             // Fetch data
-            const dataSource = new window.ApiDataSource(window.AppState.config.apiUrl)
+            const dataSource = new ApiDataSource(AppState.config.apiUrl)
             const data = await dataSource.fetchAll()
 
             // Set data and render
-            window.AppState.setData(data)
-            window.TableComponent.render()
-            window.PaginationComponent.render()
-            window.FiltersComponent.updateTotalItems()
+            AppState.setData(data)
+            TableComponent.render()
+            PaginationComponent.render()
+            FiltersComponent.updateTotalItems()
 
             console.log(`✅ Loaded ${data.length} offers successfully`)
         } catch (error) {

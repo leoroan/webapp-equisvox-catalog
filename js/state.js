@@ -1,15 +1,7 @@
-// // Application State Manager
-// const AppConfig = {
-//     get() {
-//         return {
-//             itemsPerPage: 10,
-//             discountThreshold: 10,
-//             priceThreshold: 100,
-//         }
-//     },
-// }
+// Application State Manager
+import { AppConfig } from "./config.js"
 
-const AppState = {
+export const AppState = {
     data: [],
     filtered: [],
     page: 1,
@@ -90,6 +82,3 @@ const AppState = {
         return item.current > 0 && item.current < this.config.priceThreshold
     },
 }
-
-// Make it globally accessible
-window.AppState = AppState
