@@ -45,7 +45,7 @@ export const ModalComponent = {
                     <div class="mb-3">
                         <h6 class="text-muted mb-1">Descuento</h6>
                         <span class="badge ${discountBadgeClass} fs-5 px-3 py-2">
-                            <i class="bi bi-percent me-1"></i>${item.discount}OFF
+                            <i class="bi bi-percent me-1"></i>${item.discount} OFF
                         </span>
                     </div>
                     
