@@ -284,10 +284,51 @@
                 this.url = url;
             }
 
+            // async fetchAll() {
+            //     const limit = 500; // o paginar si querés luego
+            //     const res = await fetch(`${this.url}?action=list&limit=${limit}`);
+            //     const json = await res.json();
+
+            //     return json.items.map(o => ({
+            //         id: o.ID,
+            //         title: o.Title,
+            //         original: Number(o['Original Price']) || 0,
+            //         current: Number(o['Current Price']) || 0,
+            //         discount: Number(String(o['Discount %']).replace('%', '')) || 0,
+            //         offer: o.Offer || '',
+            //         url: o.URL,
+            //         image: o['Image URL']
+            //     }));
+            // }
+
             async fetchAll() {
-                const limit = 500; // o paginar si querés luego
-                const res = await fetch(`${this.url}?action=list&limit=${limit}`);
-                const json = await res.json();
+                const limit = 500;
+                const fullUrl = `${this.url}?action=list&limit=${limit}`;
+                console.log("📡 Fetching:", fullUrl);
+
+                const res = await fetch(fullUrl);
+                console.log("📥 Response status:", res.status);
+                console.log("📎 Content-Type:", res.headers.get('content-type'));
+
+                if (!res.ok) {
+                    throw new Error(`HTTP ${res.status} ${res.statusText}`);
+                }
+
+                const text = await res.text();
+                console.log("📄 Raw response (first 300 chars):", text.substring(0, 300));
+
+                let json;
+                try {
+                    json = JSON.parse(text);
+                } catch (e) {
+                    console.error("💀 JSON inválido:", text);
+                    throw new Error("La respuesta no es JSON válido");
+                }
+
+                if (!Array.isArray(json.items)) {
+                    console.warn("⚠️ 'items' no es un array:", json);
+                    return [];
+                }
 
                 return json.items.map(o => ({
                     id: o.ID,
@@ -437,14 +478,19 @@
         async function init() {
             const API_URL = 'https://script.google.com/macros/s/AKfycbyoN1dEMb3XYWY_uL75tlr9Kr-hPbcDcuEa9TU3osThFgdTmIuEGyd0anZU-yFjiCHreA/exec';
 
+            console.log("🚀 Iniciando carga de datos...");
             const ds = new ApiDataSource(API_URL);
-            state.data = await ds.fetchAll();
-            state.filtered = [...state.data];
 
-            [fTitle, fMaxPrice, fDiscount]
-                .forEach(el => el.addEventListener('input', applyFilters));
-
-            render();
+            try {
+                const data = await ds.fetchAll();
+                console.log("✅ Datos recibidos:", data);
+                state.data = data;
+                state.filtered = [...state.data];
+                [fTitle, fMaxPrice, fDiscount].forEach(el => el.addEventListener('input', applyFilters));
+                render();
+            } catch (error) {
+                console.error("❌ Error en init:", error);
+            }
         }
 
     </script>
