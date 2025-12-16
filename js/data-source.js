@@ -100,8 +100,8 @@ export class ApiDataSource {
                 original: Number(item["Original Price"]) || 0,
                 current: Number(item["Current Price"]) || 0,
                 discount: (() => {
-                    const raw = item["Discount %"] || "0"
-                    const num = parseFloat(raw.replace(/[^\d.-]/g, "")) 
+                    const raw = item["Discount %"]
+                    const num = parseFloat(String(raw).replace(/[^\d.-]/g, "")) // convierte a string antes de limpiar
                     return isNaN(num) ? 0 : num
                 })(),
                 offer: item.Offer || "",
