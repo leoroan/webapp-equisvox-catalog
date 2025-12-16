@@ -255,27 +255,50 @@
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        class CsvDataSource {
-            constructor(url) { this.url = url; }
-            async fetch() {
-                const res = await fetch(this.url);
-                const text = await res.text();
-                const [h, ...r] = text.trim().split('\n');
-                const headers = h.split(',');
+        // class CsvDataSource {
+        //     constructor(url) { this.url = url; }
+        //     async fetch() {
+        //         const res = await fetch(this.url);
+        //         const text = await res.text();
+        //         const [h, ...r] = text.trim().split('\n');
+        //         const headers = h.split(',');
 
-                return r.map(row => {
-                    const v = row.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/)
-                        .map(x => x.replace(/"/g, '').trim());
-                    const o = Object.fromEntries(headers.map((k, i) => [k, v[i]]));
-                    return {
-                        title: o.Title,
-                        original: +o['Original Price'],
-                        current: +o['Current Price'],
-                        discount: Number(o['Discount %']?.replace('%', '')) || 0,
-                        offer: o.Offer,
-                        url: o.URL
-                    };
-                });
+        //         return r.map(row => {
+        //             const v = row.split(/,(?=(?:[^\"]*\"[^\"]*\")*[^\"]*$)/)
+        //                 .map(x => x.replace(/"/g, '').trim());
+        //             const o = Object.fromEntries(headers.map((k, i) => [k, v[i]]));
+        //             return {
+        //                 title: o.Title,
+        //                 original: +o['Original Price'],
+        //                 current: +o['Current Price'],
+        //                 discount: Number(o['Discount %']?.replace('%', '')) || 0,
+        //                 offer: o.Offer,
+        //                 url: o.URL
+        //             };
+        //         });
+        //     }
+        // }
+
+        class ApiDataSource {
+            constructor(url) {
+                this.url = url;
+            }
+
+            async fetchAll() {
+                const limit = 500; // o paginar si querés luego
+                const res = await fetch(`${this.url}?action=list&limit=${limit}`);
+                const json = await res.json();
+
+                return json.items.map(o => ({
+                    id: o.ID,
+                    title: o.Title,
+                    original: Number(o['Original Price']) || 0,
+                    current: Number(o['Current Price']) || 0,
+                    discount: Number(String(o['Discount %']).replace('%', '')) || 0,
+                    offer: o.Offer || '',
+                    url: o.URL,
+                    image: o['Image URL']
+                }));
             }
         }
 
@@ -328,19 +351,20 @@
                 if (i.discount >= 50) tr.classList.add('row-hot');
 
                 tr.innerHTML = `
-    <td><div class="game-icon"><i class="bi bi-controller"></i></div></td>
-    <td>${i.title}</td>
-    <td><s>$${i.original}</s><br>$${i.current}</td>
-    <td>${i.discount}%</td>
-    <td>${i.offer}</td>
-    <td>
-      <a href="${i.url}" target="_blank"
-         class="btn btn-sm btn-outline-info"
-         onclick="event.stopPropagation()">
-        Ver
-      </a>
-    </td>
-  `;
+                //<td><div class="game-icon"><i class="bi bi-controller"></i></div></td>
+                  <td><img src="${i.image}" alt="${i.title}" width="48" loading="lazy"></td>
+                  <td>${i.title}</td>
+                  <td><s>$${i.original}</s><br>$${i.current}</td>
+                  <td>${i.discount}%</td>
+                  <td>${i.offer}</td>
+                  <td>
+                    <a href="${i.url}" target="_blank"
+                       class="btn btn-sm btn-outline-info"
+                       onclick="event.stopPropagation()">
+                      Ver
+                    </a>
+                  </td>
+                `;
 
                 tr.addEventListener('click', () => openDetail(i));
                 rows.appendChild(tr);
@@ -395,20 +419,33 @@
             });
         });
 
-        function openDetail(item) {
-            console.log('Detalle:', item);
-            // acá abrís modal / drawer / redirect
-        }
+        // function openDetail(item) {
+        //     console.log('Detalle:', item);
+        //     // acá abrís modal / drawer / redirect
+        // }
+
+        // async function init() {
+        //     const ds = new CsvDataSource('./sample_data.csv');
+        //     state.data = await ds.fetch();
+        //     state.filtered = [...state.data];
+        //     [fTitle, fMaxPrice, fDiscount].forEach(el => el.addEventListener('input', applyFilters));
+        //     render();
+        // }
+
+        // init();
 
         async function init() {
-            const ds = new CsvDataSource('./sample_data.csv');
-            state.data = await ds.fetch();
+            const API_URL = 'https://script.google.com/macros/s/AKfycbyoN1dEMb3XYWY_uL75tlr9Kr-hPbcDcuEa9TU3osThFgdTmIuEGyd0anZU-yFjiCHreA/exec';
+
+            const ds = new ApiDataSource(API_URL);
+            state.data = await ds.fetchAll();
             state.filtered = [...state.data];
-            [fTitle, fMaxPrice, fDiscount].forEach(el => el.addEventListener('input', applyFilters));
+
+            [fTitle, fMaxPrice, fDiscount]
+                .forEach(el => el.addEventListener('input', applyFilters));
+
             render();
         }
-
-        init();
 
     </script>
 
