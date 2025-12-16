@@ -1,41 +1,125 @@
 // API Data Source
+
+const CACHE_KEY = "xb_games_cache_v1"
+const CACHE_TTL = 30 * 60 * 1000 // 30 minutos
+
+function loadCache() {
+    try {
+        const raw = localStorage.getItem(CACHE_KEY)
+        if (!raw) return null
+
+        const cached = JSON.parse(raw)
+        const age = Date.now() - cached.ts
+
+        if (age > CACHE_TTL) return null
+
+        return cached.data
+    } catch {
+        return null
+    }
+}
+
+function saveCache(data) {
+    localStorage.setItem(
+        CACHE_KEY,
+        JSON.stringify({
+            ts: Date.now(),
+            data,
+        })
+    )
+}
+
+
 export class ApiDataSource {
     constructor(url) {
         this.url = url
     }
 
+    // async fetchAll() {
+    //     const limit = 500
+    //     const fullUrl = `${this.url}?action=list&limit=${limit}`
+
+    //     try {
+    //         const res = await fetch(fullUrl)
+
+    //         if (!res.ok) {
+    //             throw new Error(`HTTP ${res.status} ${res.statusText}`)
+    //         }
+
+    //         const text = await res.text()
+    //         const json = JSON.parse(text)
+
+    //         if (!Array.isArray(json.items)) {
+    //             console.warn("No items found in API response")
+    //             return []
+    //         }
+
+    //         return json.items.map((item) => ({
+    //             id: item.ID || Math.random().toString(36),
+    //             title: item.Title || "Sin título",
+    //             original: Number(item["Original Price"]) || 0,
+    //             current: Number(item["Current Price"]) || 0,
+    //             discount: Number(String(item["Discount %"]).replace("%", "")) || 0,
+    //             offer: item.Offer || "",
+    //             url: item.URL || "#",
+    //             image: item["Image URL"] || "https://via.placeholder.com/60x60?text=No+Image",
+    //         }))
+    //     } catch (error) {
+    //         console.error("Error fetching data:", error)
+    //         throw error
+    //     }
+    // }
+    
     async fetchAll() {
-        const limit = 500
+        // 1️⃣ Intentar cache
+        const cached = loadCache()
+        if (cached) {
+            console.log("🟦 Datos desde cache cliente")
+            return cached
+        }
+
+        // 2️⃣ Fetch remoto
+        const limit = 1000
         const fullUrl = `${this.url}?action=list&limit=${limit}`
 
         try {
             const res = await fetch(fullUrl)
-
             if (!res.ok) {
-                throw new Error(`HTTP ${res.status} ${res.statusText}`)
+                throw new Error(`HTTP ${res.status}`)
             }
 
-            const text = await res.text()
-            const json = JSON.parse(text)
+            const json = await res.json()
 
             if (!Array.isArray(json.items)) {
-                console.warn("No items found in API response")
                 return []
             }
 
-            return json.items.map((item) => ({
-                id: item.ID || Math.random().toString(36),
+            const normalized = json.items.map((item) => ({
+                id: item.ID || crypto.randomUUID(),
                 title: item.Title || "Sin título",
                 original: Number(item["Original Price"]) || 0,
                 current: Number(item["Current Price"]) || 0,
-                discount: Number(String(item["Discount %"]).replace("%", "")) || 0,
+                discount: (() => {
+                    const raw = item["Discount %"] || "0"
+                    const num = parseFloat(raw.replace(/[^\d.-]/g, "")) 
+                    return isNaN(num) ? 0 : num
+                })(),
                 offer: item.Offer || "",
                 url: item.URL || "#",
-                image: item["Image URL"] || "https://via.placeholder.com/60x60?text=No+Image",
+                image:
+                    item["Image URL"] ||
+                    "https://via.placeholder.com/60x60?text=No+Image",
             }))
+
+            // 3️⃣ Guardar cache
+            saveCache(normalized)
+
+            console.log("🟩 Datos desde API remota")
+            return normalized
         } catch (error) {
             console.error("Error fetching data:", error)
             throw error
         }
     }
+}
 }
