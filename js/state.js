@@ -1,13 +1,13 @@
-// Application State Manager
-const AppConfig = {
-    get() {
-        return {
-            itemsPerPage: 10,
-            discountThreshold: 10,
-            priceThreshold: 100,
-        }
-    },
-}
+// // Application State Manager
+// const AppConfig = {
+//     get() {
+//         return {
+//             itemsPerPage: 10,
+//             discountThreshold: 10,
+//             priceThreshold: 100,
+//         }
+//     },
+// }
 
 const AppState = {
     data: [],
