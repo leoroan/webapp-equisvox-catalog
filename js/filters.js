@@ -2,23 +2,23 @@
 import { AppState } from "./state.js"
 
 export const FiltersComponent = {
-    container: null,
+  container: null,
 
-    init() {
-        this.container = document.getElementById("filtersContainer")
-        this.render()
-        this.attachEventListeners()
-    },
+  init() {
+    this.container = document.getElementById("filtersContainer")
+    this.render()
+    this.attachEventListeners()
+  },
 
-    render() {
-        const discountOptions = [
-            { value: 0, label: "Cualquiera", icon: "bi-tag" },
-            { value: 25, label: "25%+", icon: "bi-tag-fill" },
-            { value: 50, label: "50%+", icon: "bi-fire" },
-            { value: 75, label: "75%+", icon: "bi-lightning-fill" },
-        ]
+  render() {
+    const discountOptions = [
+      { value: 0, label: "Cualquiera", icon: "bi-tag" },
+      { value: 25, label: "25%+", icon: "bi-tag-fill" },
+      { value: 50, label: "50%+", icon: "bi-fire" },
+      { value: 75, label: "75%+", icon: "bi-lightning-fill" },
+    ]
 
-        this.container.innerHTML = `
+    this.container.innerHTML = `
             <!-- Search Input -->
             <div class="mb-3">
                 <label for="filterTitle" class="form-label fw-semibold">
@@ -57,8 +57,8 @@ export const FiltersComponent = {
                 </label>
                 <div class="d-grid gap-2" id="discountButtons">
                     ${discountOptions
-                .map(
-                    (opt) => `
+                      .map(
+                        (opt) => `
                         <button 
                             type="button" 
                             class="btn btn-outline-primary btn-sm discount-btn ${opt.value === 0 ? "active" : ""}" 
@@ -67,8 +67,42 @@ export const FiltersComponent = {
                             <i class="${opt.icon} me-2"></i>${opt.label}
                         </button>
                     `,
-                )
-                .join("")}
+                      )
+                      .join("")}
+                </div>
+            </div>
+
+            <!-- Es Oferta Filter -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-lightning-charge me-2"></i>Es Oferta
+                </label>
+                <div class="btn-group w-100" role="group">
+                    <input type="radio" class="btn-check" name="esOferta" id="esOfertaTodos" value="null" checked>
+                    <label class="btn btn-outline-secondary btn-sm" for="esOfertaTodos">Todos</label>
+
+                    <input type="radio" class="btn-check" name="esOferta" id="esOfertaSi" value="true">
+                    <label class="btn btn-outline-success btn-sm" for="esOfertaSi">Sí</label>
+
+                    <input type="radio" class="btn-check" name="esOferta" id="esOfertaNo" value="false">
+                    <label class="btn btn-outline-danger btn-sm" for="esOfertaNo">No</label>
+                </div>
+            </div>
+
+            <!-- Es Nuevo Filter -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">
+                    <i class="bi bi-star-fill me-2"></i>Es Nuevo
+                </label>
+                <div class="btn-group w-100" role="group">
+                    <input type="radio" class="btn-check" name="esNuevo" id="esNuevoTodos" value="null" checked>
+                    <label class="btn btn-outline-secondary btn-sm" for="esNuevoTodos">Todos</label>
+
+                    <input type="radio" class="btn-check" name="esNuevo" id="esNuevoSi" value="true">
+                    <label class="btn btn-outline-success btn-sm" for="esNuevoSi">Sí</label>
+
+                    <input type="radio" class="btn-check" name="esNuevo" id="esNuevoNo" value="false">
+                    <label class="btn btn-outline-danger btn-sm" for="esNuevoNo">No</label>
                 </div>
             </div>
 
@@ -77,60 +111,77 @@ export const FiltersComponent = {
                 <i class="bi bi-x-circle me-2"></i>Limpiar filtros
             </button>
         `
-    },
+  },
 
-    attachEventListeners() {
-        const titleInput = document.getElementById("filterTitle")
-        const priceInput = document.getElementById("filterMaxPrice")
-        const discountButtons = document.querySelectorAll(".discount-btn")
-        const clearButton = document.getElementById("clearFilters")
+  attachEventListeners() {
+    const titleInput = document.getElementById("filterTitle")
+    const priceInput = document.getElementById("filterMaxPrice")
+    const discountButtons = document.querySelectorAll(".discount-btn")
+    const clearButton = document.getElementById("clearFilters")
+    const esOfertaRadios = document.querySelectorAll('input[name="esOferta"]')
+    const esNuevoRadios = document.querySelectorAll('input[name="esNuevo"]')
 
-        let debounceTimer
-        titleInput.addEventListener("input", () => {
-            clearTimeout(debounceTimer)
-            debounceTimer = setTimeout(() => this.onFilterChange(), 300)
-        })
+    let debounceTimer
+    titleInput.addEventListener("input", () => {
+      clearTimeout(debounceTimer)
+      debounceTimer = setTimeout(() => this.onFilterChange(), 300)
+    })
 
-        priceInput.addEventListener("input", () => {
-            clearTimeout(debounceTimer)
-            debounceTimer = setTimeout(() => this.onFilterChange(), 300)
-        })
+    priceInput.addEventListener("input", () => {
+      clearTimeout(debounceTimer)
+      debounceTimer = setTimeout(() => this.onFilterChange(), 300)
+    })
 
-        discountButtons.forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                discountButtons.forEach((b) => b.classList.remove("active"))
-                e.target.closest("button").classList.add("active")
-                this.onFilterChange()
-            })
-        })
+    discountButtons.forEach((btn) => {
+      btn.addEventListener("click", (e) => {
+        discountButtons.forEach((b) => b.classList.remove("active"))
+        e.target.closest("button").classList.add("active")
+        this.onFilterChange()
+      })
+    })
 
-        clearButton.addEventListener("click", () => {
-            titleInput.value = ""
-            priceInput.value = ""
-            discountButtons.forEach((b) => b.classList.remove("active"))
-            discountButtons[0].classList.add("active")
-            this.onFilterChange()
-        })
-    },
+    esOfertaRadios.forEach((radio) => {
+      radio.addEventListener("change", () => this.onFilterChange())
+    })
 
-    onFilterChange() {
-        const filters = {
-            title: document.getElementById("filterTitle").value,
-            maxPrice: Number(document.getElementById("filterMaxPrice").value) || Number.POSITIVE_INFINITY,
-            minDiscount: Number(document.querySelector(".discount-btn.active").dataset.value),
-        }
+    esNuevoRadios.forEach((radio) => {
+      radio.addEventListener("change", () => this.onFilterChange())
+    })
 
-        AppState.applyFilters(filters)
+    clearButton.addEventListener("click", () => {
+      titleInput.value = ""
+      priceInput.value = ""
+      discountButtons.forEach((b) => b.classList.remove("active"))
+      discountButtons[0].classList.add("active")
+      document.getElementById("esOfertaTodos").checked = true
+      document.getElementById("esNuevoTodos").checked = true
+      this.onFilterChange()
+    })
+  },
 
-        import("./table.js").then(({ TableComponent }) => TableComponent.render())
-        import("./pagination.js").then(({ PaginationComponent }) => PaginationComponent.render())
-        this.updateTotalItems()
-    },
+  onFilterChange() {
+    const esOfertaValue = document.querySelector('input[name="esOferta"]:checked').value
+    const esNuevoValue = document.querySelector('input[name="esNuevo"]:checked').value
 
-    updateTotalItems() {
-        const badge = document.getElementById("totalItems")
-        if (badge) {
-            badge.textContent = `${AppState.filtered.length} ofertas`
-        }
-    },
+    const filters = {
+      title: document.getElementById("filterTitle").value,
+      maxPrice: Number(document.getElementById("filterMaxPrice").value) || Number.POSITIVE_INFINITY,
+      minDiscount: Number(document.querySelector(".discount-btn.active").dataset.value),
+      esOferta: esOfertaValue === "null" ? null : esOfertaValue === "true",
+      esNuevo: esNuevoValue === "null" ? null : esNuevoValue === "true",
+    }
+
+    AppState.applyFilters(filters)
+
+    import("./table.js").then(({ TableComponent }) => TableComponent.render())
+    import("./pagination.js").then(({ PaginationComponent }) => PaginationComponent.render())
+    this.updateTotalItems()
+  },
+
+  updateTotalItems() {
+    const badge = document.getElementById("totalItems")
+    if (badge) {
+      badge.textContent = `${AppState.filtered.length} ofertas`
+    }
+  },
 }

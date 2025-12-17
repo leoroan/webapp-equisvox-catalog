@@ -34,10 +34,6 @@ main {
     padding: 0.875rem 0.75rem;
 }
 
-.table tbody tr {
-    transition: all 0.2s ease;
-}
-
 /* Sortable Headers */
 .sortable {
     cursor: pointer;
@@ -82,25 +78,23 @@ main {
     transform: scale(1.05);
 }
 
-/* More visible row highlighting with prominent borders and backgrounds */
+/* Highlight Rows */
 .row-high-discount {
-    background: linear-gradient(90deg, rgba(220, 38, 38, 0.15) 0%, rgba(220, 38, 38, 0.05) 50%, transparent 100%) !important;
-    border-left: 5px solid #dc2626 !important;
-    font-weight: 500;
+    background: linear-gradient(90deg, rgba(220, 38, 38, 0.08) 0%, transparent 100%) !important;
+    border-left: 4px solid #dc2626;
 }
 
 .row-high-discount:hover {
-    background: linear-gradient(90deg, rgba(220, 38, 38, 0.22) 0%, rgba(220, 38, 38, 0.08) 50%, transparent 100%) !important;
+    background: linear-gradient(90deg, rgba(220, 38, 38, 0.12) 0%, transparent 100%) !important;
 }
 
 .row-low-price {
-    background: linear-gradient(90deg, rgba(22, 163, 74, 0.15) 0%, rgba(22, 163, 74, 0.05) 50%, transparent 100%) !important;
-    border-left: 5px solid #16a34a !important;
-    font-weight: 500;
+    background: linear-gradient(90deg, rgba(22, 163, 74, 0.08) 0%, transparent 100%) !important;
+    border-left: 4px solid #16a34a;
 }
 
 .row-low-price:hover {
-    background: linear-gradient(90deg, rgba(22, 163, 74, 0.22) 0%, rgba(22, 163, 74, 0.08) 50%, transparent 100%) !important;
+    background: linear-gradient(90deg, rgba(22, 163, 74, 0.12) 0%, transparent 100%) !important;
 }
 
 /* Badge Styles */
@@ -110,43 +104,22 @@ main {
     font-weight: 600;
 }
 
-/* Improved price display with clear labels */
-.price-info {
-    line-height: 1.3;
-}
-
-.price-original-label {
-    font-size: 0.8rem;
+/* Price Styles */
+.price-original {
+    text-decoration: line-through;
     color: #6c757d;
-    font-weight: 500;
+    font-size: 0.875rem;
 }
 
-.price-current-label {
-    font-size: 1.15rem;
-    font-weight: 700;
+.price-current {
+    font-size: 1.25rem;
+    font-weight: 600;
     color: #16a34a;
 }
 
 /* Filter Card */
 .card-header h6 {
     font-family: "Poppins", sans-serif;
-}
-
-/* Darker modal backdrop while keeping content visible */
-.modal-backdrop.show {
-    opacity: 0.75;
-    background-color: #1a1a1a;
-}
-
-.modal-content {
-    border-radius: 1rem;
-    border: none;
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-}
-
-.modal-header {
-    border-top-left-radius: 1rem;
-    border-top-right-radius: 1rem;
 }
 
 /* Responsive */
@@ -161,10 +134,17 @@ main {
         font-size: 0.813rem;
         padding: 0.625rem 0.5rem;
     }
+}
 
-    .price-current-label {
-        font-size: 1rem;
-    }
+/* Modal Enhancements */
+.modal-content {
+    border-radius: 1rem;
+    border: none;
+}
+
+.modal-header {
+    border-top-left-radius: 1rem;
+    border-top-right-radius: 1rem;
 }
 
 /* Loading State */

@@ -2,26 +2,26 @@
 import { AppState } from "./state.js"
 
 export const ModalComponent = {
-  modal: null,
-  bsModal: null,
+    modal: null,
+    bsModal: null,
 
-  init() {
-    this.modal = document.getElementById("gameModal")
-    this.bsModal = new window.bootstrap.Modal(this.modal)
-  },
+    init() {
+        this.modal = document.getElementById("gameModal")
+        this.bsModal = new window.bootstrap.Modal(this.modal)
+    },
 
-  open(item) {
-    const content = document.getElementById("modalContent")
-    const storeLink = document.getElementById("modalStoreLink")
-    const modalTitle = document.getElementById("gameModalLabel")
+    open(item) {
+        const content = document.getElementById("modalContent")
+        const storeLink = document.getElementById("modalStoreLink")
+        const modalTitle = document.getElementById("gameModalLabel")
 
-    modalTitle.textContent = item.title
-    storeLink.href = item.url
+        modalTitle.textContent = item.title
+        storeLink.href = item.url
 
-    const discountBadgeClass =
-      item.discount >= 50 ? "bg-danger" : item.discount >= 25 ? "bg-warning text-dark" : "bg-secondary"
+        const discountBadgeClass =
+            item.discount >= 50 ? "bg-danger" : item.discount >= 25 ? "bg-warning text-dark" : "bg-secondary"
 
-    content.innerHTML = `
+        content.innerHTML = `
             <div class="row g-4">
                 <div class="col-md-4">
                     <img 
@@ -33,15 +33,8 @@ export const ModalComponent = {
                 </div>
                 <div class="col-md-8">
                     <div class="mb-3">
-                        <h6 class="text-muted mb-2">Categoría</h6>
-                        <span class="badge bg-secondary">${item.categoria}</span>
-                        ${item.esNuevo ? '<span class="badge bg-info text-dark ms-1"><i class="bi bi-star-fill me-1"></i>Nuevo</span>' : ""}
-                        ${item.esOferta ? '<span class="badge bg-success ms-1"><i class="bi bi-lightning-charge me-1"></i>Oferta</span>' : ""}
-                    </div>
-
-                    <div class="mb-3">
                         <h6 class="text-muted mb-1">Precio Original</h6>
-                        <h4 class="text-decoration-line-through text-secondary">$${item.original.toLocaleString()}</h4>
+                        <h4 class="text-decoration-line-through">$${item.original.toLocaleString()}</h4>
                     </div>
                     
                     <div class="mb-3">
@@ -61,31 +54,29 @@ export const ModalComponent = {
                         <p class="mb-0">${item.offer}</p>
                     </div>
                     
-                    ${
-                      AppState.shouldHighlightDiscount(item)
-                        ? `
+                    ${item.discount >= AppState.config.discountThreshold
+                ? `
                         <div class="alert alert-danger mb-0">
                             <i class="bi bi-fire me-2"></i>
                             <strong>¡Oferta caliente!</strong> Descuento excepcional del ${item.discount}%
                         </div>
                     `
-                        : ""
-                    }
+                : ""
+            }
                     
-                    ${
-                      AppState.shouldHighlightPrice(item)
-                        ? `
+                    ${item.current < AppState.config.priceThreshold
+                ? `
                         <div class="alert alert-success mb-0 mt-2">
                             <i class="bi bi-tag-fill me-2"></i>
                             <strong>¡Precio increíble!</strong> Menor a $${AppState.config.priceThreshold.toLocaleString()}
                         </div>
                     `
-                        : ""
-                    }
+                : ""
+            }
                 </div>
             </div>
         `
 
-    this.bsModal.show()
-  },
+        this.bsModal.show()
+    },
 }

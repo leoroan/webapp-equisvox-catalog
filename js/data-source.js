@@ -1,125 +1,109 @@
 // API Data Source
 
-const CACHE_KEY = "xb_games_cache_v1"
+const CACHE_KEY = "xb_games_cache_v2"
 const CACHE_TTL = 30 * 60 * 1000 // 30 minutos
+const PAGE_LIMIT = 500
+const PLACEHOLDER_IMAGE =
+  "https://placehold.co/60x60"
+
+// ----------------- cache -----------------
 
 function loadCache() {
-    try {
-        const raw = localStorage.getItem(CACHE_KEY)
-        if (!raw) return null
+  try {
+    const raw = localStorage.getItem(CACHE_KEY)
+    if (!raw) return null
 
-        const cached = JSON.parse(raw)
-        const age = Date.now() - cached.ts
+    const cached = JSON.parse(raw)
+    if (Date.now() - cached.ts > CACHE_TTL) return null
 
-        if (age > CACHE_TTL) return null
-
-        return cached.data
-    } catch {
-        return null
-    }
+    return cached.data
+  } catch {
+    return null
+  }
 }
 
 function saveCache(data) {
-    localStorage.setItem(
-        CACHE_KEY,
-        JSON.stringify({
-            ts: Date.now(),
-            data,
-        })
-    )
+  localStorage.setItem(
+    CACHE_KEY,
+    JSON.stringify({ ts: Date.now(), data })
+  )
 }
 
+// ----------------- normalización -----------------
+
+function parseDiscount(value) {
+  const num = parseFloat(String(value).replace(/[^\d.-]/g, ""))
+  return isNaN(num) ? 0 : num
+}
+
+function normalize(item) {
+  return {
+    id: item.ID || crypto.randomUUID(),
+    title: item.Title || "Sin título",
+    original: Number(item["Original Price"]) || 0,
+    current: Number(item["Current Price"]) || 0,
+    discount: parseDiscount(item["Discount %"]),
+    offer: item.Offer || "",
+    url: item.URL || "#",
+    image: item["Image URL"] || PLACEHOLDER_IMAGE,
+    isOffer: Boolean(item["Es Oferta"]),
+    isNew: Boolean(item["Es Nuevo"]),
+    category: item["Categoría"] || null,
+  }
+}
+
+// ----------------- data source -----------------
 
 export class ApiDataSource {
-    constructor(url) {
-        this.url = url
+  constructor(url) {
+    this.url = url
+  }
+
+  async fetchAll() {
+    // 1️⃣ cache
+    const cached = loadCache()
+    if (cached) {
+      console.log("🟦 Datos desde cache cliente")
+      return cached
     }
 
-    // async fetchAll() {
-    //     const limit = 500
-    //     const fullUrl = `${this.url}?action=list&limit=${limit}`
+    // 2️⃣ fetch incremental
+    let offset = 0
+    let total = Infinity
+    const allItems = []
 
-    //     try {
-    //         const res = await fetch(fullUrl)
+    try {
+      while (offset < total) {
+        const res = await fetch(
+          `${this.url}?action=list&limit=${PAGE_LIMIT}&offset=${offset}`
+        )
 
-    //         if (!res.ok) {
-    //             throw new Error(`HTTP ${res.status} ${res.statusText}`)
-    //         }
-
-    //         const text = await res.text()
-    //         const json = JSON.parse(text)
-
-    //         if (!Array.isArray(json.items)) {
-    //             console.warn("No items found in API response")
-    //             return []
-    //         }
-
-    //         return json.items.map((item) => ({
-    //             id: item.ID || Math.random().toString(36),
-    //             title: item.Title || "Sin título",
-    //             original: Number(item["Original Price"]) || 0,
-    //             current: Number(item["Current Price"]) || 0,
-    //             discount: Number(String(item["Discount %"]).replace("%", "")) || 0,
-    //             offer: item.Offer || "",
-    //             url: item.URL || "#",
-    //             image: item["Image URL"] || "https://via.placeholder.com/60x60?text=No+Image",
-    //         }))
-    //     } catch (error) {
-    //         console.error("Error fetching data:", error)
-    //         throw error
-    //     }
-    // }
-    
-    async fetchAll() {
-        // 1️⃣ Intentar cache
-        const cached = loadCache()
-        if (cached) {
-            console.log("🟦 Datos desde cache cliente")
-            return cached
+        if (!res.ok) {
+          throw new Error(`HTTP ${res.status}`)
         }
 
-        // 2️⃣ Fetch remoto
-        const limit = 1000
-        const fullUrl = `${this.url}?action=list&limit=${limit}`
+        const json = await res.json()
 
-        try {
-            const res = await fetch(fullUrl)
-            if (!res.ok) {
-                throw new Error(`HTTP ${res.status}`)
-            }
+        if (!Array.isArray(json.items)) break
 
-            const json = await res.json()
+        total = json.total
+        allItems.push(...json.items)
+        offset += PAGE_LIMIT
+      }
 
-            if (!Array.isArray(json.items)) {
-                return []
-            }
+      const normalized = allItems.map(normalize)
 
-            const normalized = json.items.map((item) => ({
-                id: item.ID || crypto.randomUUID(),
-                title: item.Title || "Sin título",
-                original: Number(item["Original Price"]) || 0,
-                current: Number(item["Current Price"]) || 0,
-                discount: (() => {
-                    const raw = item["Discount %"]
-                    const num = parseFloat(String(raw).replace(/[^\d.-]/g, "")) // convierte a string antes de limpiar
-                    return isNaN(num) ? 0 : num
-                })(),
-                offer: item.Offer || "",
-                url: item.URL || "#",
-                image:
-                    item["Image URL"] ||
-                    "https://via.placeholder.com/60x60?text=No+Image",
-            }))
+      // 3️⃣ cache
+      saveCache(normalized)
 
-            // 3️⃣ Guardar cache
-            saveCache(normalized)
+      console.log(
+        `🟩 Datos desde API remota (${normalized.length})`
+      )
 
-            console.log("🟩 Datos desde API remota")
-            return normalized
-        } catch (error) {
-            console.error("Error fetching data:", error)
-            throw error
-        }
+      return normalized
+    } catch (error) {
+      console.error("Error fetching data:", error)
+      throw error
     }
+  }
 }
-

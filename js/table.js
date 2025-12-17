@@ -3,42 +3,42 @@ import { AppState } from "./state.js"
 import { ModalComponent } from "./modal.js"
 
 export const TableComponent = {
-    tbody: null,
-    thead: null,
+  tbody: null,
+  thead: null,
 
-    init() {
-        this.tbody = document.getElementById("tableBody")
-        this.thead = document.querySelector("#offersTable thead")
-        this.attachSortListeners()
-    },
+  init() {
+    this.tbody = document.getElementById("tableBody")
+    this.thead = document.querySelector("#offersTable thead")
+    this.attachSortListeners()
+  },
 
-    attachSortListeners() {
-        const sortableHeaders = this.thead.querySelectorAll(".sortable")
-        sortableHeaders.forEach((header) => {
-            header.addEventListener("click", () => {
-                const sortKey = header.dataset.sort
-                AppState.setSort(sortKey)
-                this.render()
-                this.updateSortIndicators()
-            })
-        })
-    },
+  attachSortListeners() {
+    const sortableHeaders = this.thead.querySelectorAll(".sortable")
+    sortableHeaders.forEach((header) => {
+      header.addEventListener("click", () => {
+        const sortKey = header.dataset.sort
+        AppState.setSort(sortKey)
+        this.render()
+        this.updateSortIndicators()
+      })
+    })
+  },
 
-    updateSortIndicators() {
-        const headers = this.thead.querySelectorAll(".sortable")
-        headers.forEach((header) => {
-            header.classList.remove("sorted-asc", "sorted-desc")
-            if (header.dataset.sort === AppState.sort.key) {
-                header.classList.add(`sorted-${AppState.sort.dir}`)
-            }
-        })
-    },
+  updateSortIndicators() {
+    const headers = this.thead.querySelectorAll(".sortable")
+    headers.forEach((header) => {
+      header.classList.remove("sorted-asc", "sorted-desc")
+      if (header.dataset.sort === AppState.sort.key) {
+        header.classList.add(`sorted-${AppState.sort.dir}`)
+      }
+    })
+  },
 
-    render() {
-        const items = AppState.getPageItems()
+  render() {
+    const items = AppState.getPageItems()
 
-        if (items.length === 0) {
-            this.tbody.innerHTML = `
+    if (items.length === 0) {
+      this.tbody.innerHTML = `
                 <tr>
                     <td colspan="6" class="text-center py-5 text-muted">
                         <i class="bi bi-inbox fs-1 d-block mb-3"></i>
@@ -46,24 +46,27 @@ export const TableComponent = {
                     </td>
                 </tr>
             `
-            return
+      return
+    }
+
+    this.tbody.innerHTML = items
+      .map((item) => {
+        const rowClasses = []
+        let rowStyle = ""
+        if (AppState.shouldHighlightDiscount(item)) {
+          rowClasses.push("row-high-discount")
+          rowStyle += "box-shadow: -4px 0 0 0 #dc2626 inset;"
+        }
+        if (AppState.shouldHighlightPrice(item)) {
+          rowClasses.push("row-low-price")
+          rowStyle += "box-shadow: -4px 0 0 0 #16a34a inset;"
         }
 
-        this.tbody.innerHTML = items
-            .map((item) => {
-                const rowClasses = []
-                if (AppState.shouldHighlightDiscount(item)) {
-                    rowClasses.push("row-high-discount")
-                }
-                if (AppState.shouldHighlightPrice(item)) {
-                    rowClasses.push("row-low-price")
-                }
+        const discountBadgeClass =
+          item.discount >= 50 ? "bg-danger" : item.discount >= 25 ? "bg-warning text-dark" : "bg-secondary"
 
-                const discountBadgeClass =
-                    item.discount >= 50 ? "bg-danger" : item.discount >= 25 ? "bg-warning text-dark" : "bg-secondary"
-
-                return `
-                <tr class="${rowClasses.join(" ")}" data-id="${item.id}">
+        return `
+                <tr class="${rowClasses.join(" ")}" style="${rowStyle}" data-id="${item.id}">
                     <td>
                         <img 
                             src="${item.image}" 
@@ -73,11 +76,18 @@ export const TableComponent = {
                         >
                     </td>
                     <td>
-                        <strong>${item.title}</strong>
+                        <div class="d-flex align-items-center gap-2">
+                            <strong>${item.title}</strong>
+                            ${item.esNuevo ? '<span class="badge bg-info text-dark"><i class="bi bi-star-fill"></i> Nuevo</span>' : ""}
+                            ${item.esOferta ? '<span class="badge bg-success"><i class="bi bi-lightning-charge"></i> Oferta</span>' : ""}
+                        </div>
+                        <small class="text-muted">${item.categoria}</small>
                     </td>
                     <td>
-                        <div class="price-original">$${item.original.toLocaleString()}</div>
-                        <div class="price-current">$${item.current.toLocaleString()}</div>
+                        <div class="price-info">
+                            <div class="price-original-label">Antes: <span class="text-decoration-line-through">$${item.original.toLocaleString()}</span></div>
+                            <div class="price-current-label fw-bold text-success">Ahora: $${item.current.toLocaleString()}</div>
+                        </div>
                     </td>
                     <td>
                         <span class="badge badge-discount ${discountBadgeClass}">
@@ -88,40 +98,29 @@ export const TableComponent = {
                         <small class="text-muted">${item.offer}</small>
                     </td>
                     <td>
-                        <button 
-                            class="btn btn-sm btn-outline-primary view-details-btn" 
-                            data-id="${item.id}"
-                        >
-                            <i class="bi bi-eye"></i>
-                        </button>
+                        <!-- Removed the eye icon button as clicking row has same behavior -->
+                        <a href="${item.url}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation()">
+                            <i class="bi bi-box-arrow-up-right"></i>
+                        </a>
                     </td>
                 </tr>
             `
-            })
-            .join("")
+      })
+      .join("")
 
-        this.attachRowEventListeners()
-    },
+    this.attachRowEventListeners()
+  },
 
-    attachRowEventListeners() {
-        // Click on row to open modal
-        this.tbody.querySelectorAll("tr[data-id]").forEach((row) => {
-            row.addEventListener("click", (e) => {
-                if (e.target.closest("button")) return
-                const id = row.dataset.id
-                const item = AppState.data.find((i) => i.id === id)
-                if (item) ModalComponent.open(item)
-            })
-        })
-
-        // Click on view button
-        this.tbody.querySelectorAll(".view-details-btn").forEach((btn) => {
-            btn.addEventListener("click", (e) => {
-                e.stopPropagation()
-                const id = btn.dataset.id
-                const item = AppState.data.find((i) => i.id === id)
-                if (item) ModalComponent.open(item)
-            })
-        })
-    },
+  attachRowEventListeners() {
+    // Click on row to open modal
+    this.tbody.querySelectorAll("tr[data-id]").forEach((row) => {
+      row.addEventListener("click", (e) => {
+        if (e.target.closest("a")) return
+        const id = row.dataset.id
+        const item = AppState.data.find((i) => i.id === id)
+        if (item) ModalComponent.open(item)
+      })
+      row.style.cursor = "pointer"
+    })
+  },
 }
