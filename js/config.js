@@ -1,12 +1,12 @@
 // Configuration Manager
+const implementation_id = "AAKfycbzh10Rjlg4PQ6Y_WnyVqm2NrCSzmJLx4zg6F0pS2NIrlw0VQEb4CSMuDb88kYqEDWWZzg"
 export const AppConfig = {
     // Default configuration
     defaults: {
         discountThreshold: 50,
         priceThreshold: 2000,
         itemsPerPage: 10,
-        apiUrl:
-            "https://script.google.com/macros/s/AKfycbyoN1dEMb3XYWY_uL75tlr9Kr-hPbcDcuEa9TU3osThFgdTmIuEGyd0anZU-yFjiCHreA/exec",
+        apiUrl: `https://script.google.com/macros/s/${implementation_id}/exec`,
     },
 
     // Load configuration from localStorage

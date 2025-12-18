@@ -36,6 +36,8 @@ function parseDiscount(value) {
   return isNaN(num) ? 0 : num
 }
 
+const yes = v => String(v).toUpperCase() === "SÍ"
+
 function normalize(item) {
   return {
     id: item.ID || crypto.randomUUID(),
@@ -46,8 +48,8 @@ function normalize(item) {
     offer: item.Offer || "",
     url: item.URL || "#",
     image: item["Image URL"] || PLACEHOLDER_IMAGE,
-    isOffer: Boolean(item["Es Oferta"]),
-    isNew: Boolean(item["Es Nuevo"]),
+    isOffer: yes(item["Es Oferta"]),
+    isNew: yes(item["Es Nuevo"]),
     category: item["Categoría"] || null,
   }
 }
@@ -87,14 +89,15 @@ export class ApiDataSource {
         if (!Array.isArray(json.items)) break
 
         total = json.total
-        allItems.push(...json.items)
+        allItems.push(...json.items.map(normalize))
         offset += PAGE_LIMIT
       }
 
       const normalized = allItems.map(normalize)
 
       // 3️⃣ cache
-      saveCache(normalized)
+      saveCache(allItems)
+      return allItems
 
       console.log(
         `🟩 Datos desde API remota (${normalized.length})`
