@@ -83,14 +83,15 @@ main {
 }
 
 /* More visible row highlighting with prominent borders and backgrounds */
+/* Changed high discount highlight to VIOLET instead of red */
 .row-high-discount {
-    background: linear-gradient(90deg, rgba(220, 38, 38, 0.15) 0%, rgba(220, 38, 38, 0.05) 50%, transparent 100%) !important;
-    border-left: 5px solid #dc2626 !important;
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.2) 0%, rgba(139, 92, 246, 0.08) 50%, transparent 100%) !important;
+    border-left: 6px solid #8b5cf6 !important;
     font-weight: 500;
 }
 
 .row-high-discount:hover {
-    background: linear-gradient(90deg, rgba(220, 38, 38, 0.22) 0%, rgba(220, 38, 38, 0.08) 50%, transparent 100%) !important;
+    background: linear-gradient(90deg, rgba(139, 92, 246, 0.3) 0%, rgba(139, 92, 246, 0.12) 50%, transparent 100%) !important;
 }
 
 .row-low-price {

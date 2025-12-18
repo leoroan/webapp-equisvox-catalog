@@ -40,8 +40,10 @@ export const AppState = {
 
     this.filtered = this.data.filter((item) => {
       const matchTitle = !title || item.title.toLowerCase().includes(title.toLowerCase())
-      const matchPrice = !maxPrice || item.current <= maxPrice
-      const matchDiscount = !minDiscount || item.discount >= minDiscount
+      const matchPrice = maxPrice === Number.POSITIVE_INFINITY || item.current <= maxPrice
+      const matchDiscount = minDiscount === 0 || item.discount >= minDiscount
+
+      // Proper boolean comparisons
       const matchOferta = esOferta === null || item.esOferta === esOferta
       const matchNuevo = esNuevo === null || item.esNuevo === esNuevo
 

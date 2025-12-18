@@ -55,7 +55,7 @@ export const TableComponent = {
         let rowStyle = ""
         if (AppState.shouldHighlightDiscount(item)) {
           rowClasses.push("row-high-discount")
-          rowStyle += "box-shadow: -4px 0 0 0 #dc2626 inset;"
+          rowStyle += "box-shadow: -4px 0 0 0 #7c3aed inset;" // Changed highlight color to violet for high discount rows
         }
         if (AppState.shouldHighlightPrice(item)) {
           rowClasses.push("row-low-price")
@@ -76,10 +76,10 @@ export const TableComponent = {
                         >
                     </td>
                     <td>
-                        <div class="d-flex align-items-center gap-2">
+                        <div class="d-flex flex-wrap align-items-center gap-2">
                             <strong>${item.title}</strong>
-                            ${item.esNuevo ? '<span class="badge bg-info text-dark"><i class="bi bi-star-fill"></i> Nuevo</span>' : ""}
-                            ${item.esOferta ? '<span class="badge bg-success"><i class="bi bi-lightning-charge"></i> Oferta</span>' : ""}
+                            ${item.esNuevo ? '<span class="badge bg-info"><i class="bi bi-star-fill me-1"></i>NUEVO</span>' : ""}
+                            ${item.esOferta ? '<span class="badge bg-success"><i class="bi bi-lightning-charge-fill me-1"></i>OFERTA</span>' : ""}
                         </div>
                         <small class="text-muted">${item.categoria}</small>
                     </td>
@@ -91,14 +91,13 @@ export const TableComponent = {
                     </td>
                     <td>
                         <span class="badge badge-discount ${discountBadgeClass}">
-                            <i class="bi bi-percent me-1"></i>${item.discount}
+                            <i class="bi bi-percent me-1"></i>${item.discount}%
                         </span>
                     </td>
                     <td>
                         <small class="text-muted">${item.offer}</small>
                     </td>
                     <td>
-                        <!-- Removed the eye icon button as clicking row has same behavior -->
                         <a href="${item.url}" target="_blank" class="btn btn-sm btn-outline-primary" onclick="event.stopPropagation()">
                             <i class="bi bi-box-arrow-up-right"></i>
                         </a>
