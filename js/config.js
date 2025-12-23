@@ -1,5 +1,5 @@
 // Configuration Manager
-const implementation_id = "AKfycbwWkXNVCYg7KuSIwuW2j2aogmFYGm6ef89rqqISTc-vz7WwRtmYdVsYs_6Dr5IC7bA25g"
+const implementation_id = "AKfycbwV6vbetc3uHDqjen2DLfIsngEtTaYAInRqaVa4V7Om4xEHuOb0TDktui3_m8jqFyAgwQ"
 export const AppConfig = {
     // Default configuration
     defaults: {
