@@ -1,8 +1,8 @@
-// Filters Component
 import { AppState } from "./state.js"
 
 export const FiltersComponent = {
   container: null,
+  collapsed: false,
 
   init() {
     this.container = document.getElementById("filtersContainer")
@@ -57,8 +57,8 @@ export const FiltersComponent = {
                 </label>
                 <div class="d-grid gap-2" id="discountButtons">
                     ${discountOptions
-                      .map(
-                        (opt) => `
+        .map(
+          (opt) => `
                         <button 
                             type="button" 
                             class="btn btn-outline-primary btn-sm discount-btn ${opt.value === 0 ? "active" : ""}" 
@@ -67,8 +67,8 @@ export const FiltersComponent = {
                             <i class="${opt.icon} me-2"></i>${opt.label}
                         </button>
                     `,
-                      )
-                      .join("")}
+        )
+        .join("")}
                 </div>
             </div>
 
@@ -78,31 +78,14 @@ export const FiltersComponent = {
                     <i class="bi bi-lightning-charge me-2"></i>Es Oferta
                 </label>
                 <div class="btn-group w-100" role="group">
-                    <input type="radio" class="btn-check" name="esOferta" id="esOfertaTodos" value="null" checked>
-                    <label class="btn btn-outline-secondary btn-sm" for="esOfertaTodos">Todos</label>
+                    <input type="radio" class="btn-check" name="isOffer" id="isOfferTodos" value="null" checked>
+                    <label class="btn btn-outline-secondary btn-sm" for="isOfferTodos">Todos</label>
 
-                    <input type="radio" class="btn-check" name="esOferta" id="esOfertaSi" value="true">
-                    <label class="btn btn-outline-success btn-sm" for="esOfertaSi">Sí</label>
+                    <input type="radio" class="btn-check" name="isOffer" id="isOfferSi" value="true">
+                    <label class="btn btn-outline-success btn-sm" for="isOfferSi">Sí</label>
 
-                    <input type="radio" class="btn-check" name="esOferta" id="esOfertaNo" value="false">
-                    <label class="btn btn-outline-danger btn-sm" for="esOfertaNo">No</label>
-                </div>
-            </div>
-
-            <!-- Es Nuevo Filter -->
-            <div class="mb-3">
-                <label class="form-label fw-semibold">
-                    <i class="bi bi-star-fill me-2"></i>Es Nuevo
-                </label>
-                <div class="btn-group w-100" role="group">
-                    <input type="radio" class="btn-check" name="esNuevo" id="esNuevoTodos" value="null" checked>
-                    <label class="btn btn-outline-secondary btn-sm" for="esNuevoTodos">Todos</label>
-
-                    <input type="radio" class="btn-check" name="esNuevo" id="esNuevoSi" value="true">
-                    <label class="btn btn-outline-success btn-sm" for="esNuevoSi">Sí</label>
-
-                    <input type="radio" class="btn-check" name="esNuevo" id="esNuevoNo" value="false">
-                    <label class="btn btn-outline-danger btn-sm" for="esNuevoNo">No</label>
+                    <input type="radio" class="btn-check" name="isOffer" id="isOfferNo" value="false">
+                    <label class="btn btn-outline-danger btn-sm" for="isOfferNo">No</label>
                 </div>
             </div>
 
@@ -118,8 +101,7 @@ export const FiltersComponent = {
     const priceInput = document.getElementById("filterMaxPrice")
     const discountButtons = document.querySelectorAll(".discount-btn")
     const clearButton = document.getElementById("clearFilters")
-    const esOfertaRadios = document.querySelectorAll('input[name="esOferta"]')
-    const esNuevoRadios = document.querySelectorAll('input[name="esNuevo"]')
+    const isOfferRadios = document.querySelectorAll('input[name="isOffer"]')
 
     let debounceTimer
     titleInput.addEventListener("input", () => {
@@ -140,11 +122,7 @@ export const FiltersComponent = {
       })
     })
 
-    esOfertaRadios.forEach((radio) => {
-      radio.addEventListener("change", () => this.onFilterChange())
-    })
-
-    esNuevoRadios.forEach((radio) => {
+    isOfferRadios.forEach((radio) => {
       radio.addEventListener("change", () => this.onFilterChange())
     })
 
@@ -153,28 +131,25 @@ export const FiltersComponent = {
       priceInput.value = ""
       discountButtons.forEach((b) => b.classList.remove("active"))
       discountButtons[0].classList.add("active")
-      document.getElementById("esOfertaTodos").checked = true
-      document.getElementById("esNuevoTodos").checked = true
+      document.getElementById("isOfferTodos").checked = true
       this.onFilterChange()
     })
   },
 
   onFilterChange() {
-    const esOfertaValue = document.querySelector('input[name="esOferta"]:checked').value
-    const esNuevoValue = document.querySelector('input[name="esNuevo"]:checked').value
+    const isOfferValue = document.querySelector('input[name="isOffer"]:checked').value
 
     const filters = {
       title: document.getElementById("filterTitle").value,
       maxPrice: Number(document.getElementById("filterMaxPrice").value) || Number.POSITIVE_INFINITY,
       minDiscount: Number(document.querySelector(".discount-btn.active").dataset.value),
-      esOferta: esOfertaValue === "null" ? null : esOfertaValue === "true",
-      esNuevo: esNuevoValue === "null" ? null : esNuevoValue === "true",
+      isOffer: isOfferValue === "null" ? null : isOfferValue === "true",
     }
 
     AppState.applyFilters(filters)
 
     import("./table.js").then(({ TableComponent }) => TableComponent.render())
-    import("./pagination.js").then(({ PaginationComponent }) => PaginationComponent.render())
+    import("./pagination.js").then(({ PaginationComponent }) => PaginationComponent.renderAll())
     this.updateTotalItems()
   },
 

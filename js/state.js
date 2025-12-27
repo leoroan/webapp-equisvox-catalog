@@ -1,4 +1,3 @@
-// Application State Manager
 import { AppConfig } from "./config.js"
 
 export const AppState = {
@@ -9,19 +8,16 @@ export const AppState = {
   sort: { key: "title", dir: "asc" },
   config: {},
 
-  // Initialize state
   init() {
     this.config = AppConfig.get()
     this.perPage = this.config.itemsPerPage
   },
 
-  // Set data
   setData(data) {
     this.data = data
     this.filtered = [...data]
   },
 
-  // Apply sorting
   applySorter() {
     const { key, dir } = this.sort
     const multiplier = dir === "asc" ? 1 : -1
@@ -34,39 +30,32 @@ export const AppState = {
     })
   },
 
-  // Apply filters
   applyFilters(filters) {
-    const { title, maxPrice, minDiscount, esOferta, esNuevo } = filters
+    const { title, maxPrice, minDiscount, isOffer } = filters
 
     this.filtered = this.data.filter((item) => {
       const matchTitle = !title || item.title.toLowerCase().includes(title.toLowerCase())
       const matchPrice = maxPrice === Number.POSITIVE_INFINITY || item.current <= maxPrice
       const matchDiscount = minDiscount === 0 || item.discount >= minDiscount
+      const matchOferta = isOffer === null || item.isOffer === isOffer
 
-      // Proper boolean comparisons
-      const matchOferta = esOferta === null || item.esOferta === esOferta
-      const matchNuevo = esNuevo === null || item.esNuevo === esNuevo
-
-      return matchTitle && matchPrice && matchDiscount && matchOferta && matchNuevo
+      return matchTitle && matchPrice && matchDiscount && matchOferta
     })
 
     this.applySorter()
     this.page = 1
   },
 
-  // Get current page items
   getPageItems() {
     const start = (this.page - 1) * this.perPage
     const end = start + this.perPage
     return this.filtered.slice(start, end)
   },
 
-  // Get total pages
   getTotalPages() {
     return Math.ceil(this.filtered.length / this.perPage)
   },
 
-  // Set sort
   setSort(key) {
     if (this.sort.key === key) {
       this.sort.dir = this.sort.dir === "asc" ? "desc" : "asc"
@@ -77,7 +66,6 @@ export const AppState = {
     this.applySorter()
   },
 
-  // Should highlight row
   shouldHighlightDiscount(item) {
     return item.discount >= this.config.discountThreshold
   },

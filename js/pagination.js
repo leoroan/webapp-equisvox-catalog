@@ -1,19 +1,27 @@
-// Pagination Component
 import { AppState } from "./state.js"
 
 export const PaginationComponent = {
-    container: null,
+    containerBottom: null,
+    containerTop: null,
 
     init() {
-        this.container = document.getElementById("pagination")
+        this.containerBottom = document.getElementById("paginationBottom")
+        this.containerTop = document.getElementById("paginationTop")
     },
 
-    render() {
+    renderAll() {
+        this.render(this.containerTop)
+        this.render(this.containerBottom)
+    },
+
+    render(container) {
+        if (!container) return
+
         const totalPages = AppState.getTotalPages()
         const currentPage = AppState.page
 
         if (totalPages <= 1) {
-            this.container.innerHTML = ""
+            container.innerHTML = ""
             return
         }
 
@@ -75,17 +83,17 @@ export const PaginationComponent = {
             </li>
         `
 
-        this.container.innerHTML = html
-        this.attachEventListeners()
+        container.innerHTML = html
+        this.attachEventListeners(container)
     },
 
-    attachEventListeners() {
-        this.container.querySelectorAll("button[data-page]").forEach((btn) => {
+    attachEventListeners(container) {
+        container.querySelectorAll("button[data-page]").forEach((btn) => {
             btn.addEventListener("click", () => {
                 AppState.page = Number(btn.dataset.page)
 
                 import("./table.js").then(({ TableComponent }) => TableComponent.render())
-                this.render()
+                this.renderAll()
                 window.scrollTo({ top: 0, behavior: "smooth" })
             })
         })

@@ -16,10 +16,9 @@ const App = {
             ModalComponent.init()
             PaginationComponent.init()
 
-            // Show loading state
             document.getElementById("tableBody").innerHTML = `
                 <tr>
-                    <td colspan="6" class="text-center py-5">
+                    <td colspan="5" class="text-center py-5">
                         <div class="spinner-border text-primary" role="status">
                             <span class="visually-hidden">Cargando...</span>
                         </div>
@@ -35,7 +34,7 @@ const App = {
             // Set data and render
             AppState.setData(data)
             TableComponent.render()
-            PaginationComponent.render()
+            PaginationComponent.renderAll()
             FiltersComponent.updateTotalItems()
 
             console.log(`✅ Loaded ${data.length} offers successfully`)
@@ -43,7 +42,7 @@ const App = {
             console.error("❌ Error initializing app:", error)
             document.getElementById("tableBody").innerHTML = `
                 <tr>
-                    <td colspan="6" class="text-center py-5">
+                    <td colspan="5" class="text-center py-5">
                         <i class="bi bi-exclamation-triangle text-danger fs-1 d-block mb-3"></i>
                         <p class="text-danger">Error al cargar las ofertas</p>
                         <button class="btn btn-outline-primary btn-sm" onclick="location.reload()">

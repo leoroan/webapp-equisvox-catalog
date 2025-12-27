@@ -1,109 +1,40 @@
-// API Data Source
-
-const CACHE_KEY = "xb_games_cache_v2"
-const CACHE_TTL = 30 * 60 * 1000 // 30 minutos
-const PAGE_LIMIT = 500
-const PLACEHOLDER_IMAGE =
-  "https://placehold.co/60x60"
-
-// ----------------- cache -----------------
-
-function loadCache() {
-  try {
-    const raw = localStorage.getItem(CACHE_KEY)
-    if (!raw) return null
-
-    const cached = JSON.parse(raw)
-    if (Date.now() - cached.ts > CACHE_TTL) return null
-
-    return cached.data
-  } catch {
-    return null
-  }
-}
-
-function saveCache(data) {
-  localStorage.setItem(
-    CACHE_KEY,
-    JSON.stringify({ ts: Date.now(), data })
-  )
-}
-
-// ----------------- normalización -----------------
-
-function parseDiscount(value) {
-  const num = parseFloat(String(value).replace(/[^\d.-]/g, ""))
-  return isNaN(num) ? 0 : num
-}
-
-const yes = v => String(v).toUpperCase() === "SÍ"
-
-function normalize(item) {
-  return {
-    id: item.ID || crypto.randomUUID(),
-    title: item.Title || "Sin título",
-    original: Number(item["Original Price"]) || 0,
-    current: Number(item["Current Price"]) || 0,
-    discount: parseDiscount(item["Discount %"]),
-    offer: item.Offer || "",
-    url: item.URL || "#",
-    image: item["Image URL"] || PLACEHOLDER_IMAGE,
-    isOffer: yes(item["Es Oferta"]),
-    isNew: yes(item["Es Nuevo"]),
-    category: item["Categoría"] || null,
-  }
-}
-
-// ----------------- data source -----------------
-
 export class ApiDataSource {
   constructor(url) {
     this.url = url
   }
 
   async fetchAll() {
-    // 1️⃣ cache
-    const cached = loadCache()
-    if (cached) {
-      console.log("🟦 Datos desde cache cliente")
-      return cached
-    }
-
-    // 2️⃣ fetch incremental
-    let offset = 0
-    let total = Infinity
-    const allItems = []
+    const limit = 1000
+    const fullUrl = `${this.url}?action=list&limit=${limit}`
 
     try {
-      while (offset < total) {
-        const res = await fetch(
-          `${this.url}?action=list&limit=${PAGE_LIMIT}&offset=${offset}`
-        )
+      const res = await fetch(fullUrl)
 
-        if (!res.ok) {
-          throw new Error(`HTTP ${res.status}`)
-        }
-
-        const json = await res.json()
-
-        if (!Array.isArray(json.items)) break
-
-        total = json.total
-        allItems.push(...json.items.map(normalize))
-        offset += PAGE_LIMIT
+      if (!res.ok) {
+        throw new Error(`HTTP ${res.status} ${res.statusText}`)
       }
 
-      const normalized = allItems.map(normalize)
+      const text = await res.text()
+      const json = JSON.parse(text)
 
-      // 3️⃣ cache
-      saveCache(allItems)
-      return allItems
+      if (!Array.isArray(json.items)) {
+        console.warn("No items found in API response")
+        return []
+      }
+      console.log(json.items);
 
-      console.log(
-        `🟩 Datos desde API remota (${normalized.length})`
-      )
-
-      return normalized
+      return json.items.map((item) => ({
+        id: item.ID || Math.random().toString(36),
+        title: item.Title || "Sin título",
+        original: Number(item["Original Price"]) || 0,
+        current: Number(item["Current Price"]) || 0,
+        discount: Number(String(item["Discount %"]).replace("%", "")) || 0,
+        offer: item["Offer Text"] || item.Offer || "",
+        isOffer: item["Es Oferta"] === "SÍ" || item["Es Oferta"] === "SI" || item["Es Oferta"] === true,
+        categoria: item["Categoría"] || "Sin categoría",
+        url: item.URL || "#",
+        image: item["Image URL"] || "https://via.placeholder.com/60x60?text=No+Image",
+      }))
     } catch (error) {
       console.error("Error fetching data:", error)
       throw error
